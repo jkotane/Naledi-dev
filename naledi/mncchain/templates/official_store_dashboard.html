@@ -1,0 +1,55 @@
+{% extends "officialbase.html" %}
+
+{% block title %}Official Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center">Active Regional Stores</h2>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Store Name</th>
+                <th>Store ID</th>
+                <th>Last Review Date</th>
+                <th>Compliance Status</th>
+                <th>Action</th> <!-- Added Action column -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for store in active_stores %}
+            <tr>
+                <td>{{ store.store_name }}</td>
+                <td>{{ store.store_id }}</td>
+                <td>{{ store.updated_at.strftime('%Y-%m-%d %H:%M') if store.updated_at else 'No Review Yet' }}</td>
+                <td>
+                    {% if store.compliance_status == "compliant" %}
+                        🟢 <strong>Compliant</strong>
+                    {% elif store.compliance_status == "amber" %}
+                        🟠 <strong>Amber</strong>
+                    {% elif store.compliance_status == "non-compliant" %}
+                        🔴 <strong>Non-Compliant</strong>
+                    {% else %}
+                        🟡 <strong>Pending</strong>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if store.compliance_status == "compliant" %}
+                        <!-- ✅ If store is compliant, show 'View & Update' -->
+                        <a href="{{ url_for('mncview.view_compliance', store_id=store.store_id) }}" class="btn btn-info">
+                            👀 View & Update
+                        </a>
+                    {% else %}
+                        <!-- ✅ If store is not compliant, show 'Review' -->
+                        <a href="{{ url_for('mncview.official_health_review', store_id=store.store_id) }}" class="btn btn-primary">
+                            ✍️ Review
+                        </a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table> 
+</div>
+{% endblock %}
+

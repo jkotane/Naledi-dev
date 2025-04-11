@@ -1,0 +1,85 @@
+{% extends "adminbase.html" %}
+{% block title %}Pre-Register Municipal User{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h3 class="text-center">Pre-Register Municipal User</h3> 
+
+  <!-- Flash Messages -->
+  {% with messages = get_flashed_messages(with_categories=True) %}
+  {% if messages %}
+  <div class="form-group col-md-6 mx-auto">
+      {% for category, message in messages %}
+      <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      {% endfor %}
+  </div>
+  {% endif %}
+  {% endwith %}
+
+  <form method="POST" action="{{ url_for('admin.admin_pre_register') }}">
+    <!-- First Name -->
+    <div class="form-group col-md-6 mx-auto">
+      <label for="fname">First Name</label>
+      <input type="text" class="form-control" id="fname" name="fname" required />
+    </div>
+
+    <!-- Last Name -->
+    <div class="form-group col-md-6 mx-auto">
+      <label for="lname">Last Name</label>
+      <input type="text" class="form-control" id="lname" name="lname" required />
+    </div>
+
+    <!-- Email -->
+    <div class="form-group col-md-6 mx-auto">
+      <label for="email">Official Email</label>
+      <input type="email" class="form-control" id="email" name="email" required />
+    </div>
+
+    <!-- Municipality -->
+    <div class="form-group col-md-6 mx-auto">
+      <label for="municipal_id">Municipality ID</label>
+      <input type="number" class="form-control" id="municipal_id" name="municipal_id" />
+    </div>
+
+   <!-- Department (Fixed Layout) -->
+    <div class="form-group col-md-6 mx-auto">
+      <label for="dept_id">Department</label>
+      <select class="form-control" id="dept_id" name="dept_id" required>
+        <option value="">Select Department</option>
+        {% for department in departments %}
+        <option value="{{ department.id }}">{{ department.deptname }}</option>
+        {% endfor %}
+      </select>
+    </div>
+        
+
+    <!-- Job Title -->
+    <div class="form-group col-md-6 mx-auto">
+      <label for="job_title">Job Title</label>
+      <input type="text" class="form-control" id="job_title" name="job_title" required />
+    </div>
+
+    <!-- Contact -->
+    <div class="form-group col-md-6 mx-auto">
+      <label for="contact">Contact Number</label>
+      <input type="text" class="form-control" id="contact" name="contact" required />
+    </div>
+
+    <div class="form-group col-md-6 mx-auto text-left">
+      <button type="submit" class="btn btn-primary btn-lg btn-sm mt-4">Pre-Register User</button>
+    </div>
+  </form>
+</div>
+
+<!-- ✅ JavaScript to Pre-fill Fields -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById("municipal_id").value = "{{ municipal_id }}";
+    document.getElementById("dept_name").value = "{{ dept_name }}";
+});
+</script>
+
+{% endblock %}

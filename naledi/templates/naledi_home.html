@@ -1,0 +1,42 @@
+{% extends "naledibase.html" %}
+
+{% block title %} Home {% endblock %}
+
+{% block content %}
+<div class="landing-text text-center">
+  <h1>Compliance made easy </h1>
+ 
+</div>
+
+<div class="landing-graphic text-center">
+  <div class="image-container">
+    <img src="{{ url_for('static', filename='images/import_steps2.png') }}" alt="Registration Steps" width =500/>
+    <img src="{{ url_for('static', filename='images/kidsstorefront.jpg') }}" alt="Kids Storefront" class="responsive-img" />
+  </div>
+</div>
+
+<div class="cta-container text-center" style="margin-top: 20px;">
+  <a href="{{ url_for('naledi.naledi_login') }}" class="btn btn-light">Get Started</a>
+  <span style="margin-left: 15px;">Already have an account? <a href="{{ url_for('naledi.naledi_login') }}">Sign in</a></span>
+</div>
+
+<style>
+  .image-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .responsive-img {
+    width: 35%;
+    height: auto;
+    object-fit: cover;
+    aspect-ratio: 4 / 3;
+  }
+  @media (max-width: 768px) {
+    .responsive-img {
+      width: 100%;
+    }
+  }
+</style>
+{% endblock %}

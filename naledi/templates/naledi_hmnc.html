@@ -1,0 +1,27 @@
+<!-- Extending the official base template -->
+{% extends "naledibase.html" %}
+
+{% block title %}Municipalities Summary{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-header">
+            <h1>Municipalities Summary</h1>
+        </div>
+        <div class="card-body">
+            <div id="summary" class="p-3">
+                <p>Loading municipality data...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Link to External JS -->
+    <!-- <script src="{{ url_for('static', filename='js/mncList.js') }}"></script> -->
+    <script src="{{ url_for('static', filename='js/toggleFields.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/mncDropdown.js') }}"></script>
+    <script>
+        // Load the municipalities summary
+        loadMunicipalitiesSummary();
+    </script>
+{% endblock %}
+

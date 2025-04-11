@@ -1,0 +1,380 @@
+	.mediaViewInfo {
+		--web-view-name: Canvas;
+		--web-view-id: Canvas;
+		--web-scale-on-resize: true;
+		--web-enable-deep-linking: true;
+	}
+	:root {
+		--web-view-ids: Canvas;
+	}
+	* {
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+		border: none;
+	}
+	#Canvas {
+		position: absolute;
+		width: 1920px;
+		height: 1080px;
+		background-color: rgba(0,0,0,0);
+		overflow: hidden;
+		--web-view-name: Canvas;
+		--web-view-id: Canvas;
+		--web-scale-on-resize: true;
+		--web-enable-deep-linking: true;
+	}
+	#Background {
+		position: absolute;
+		width: 1920px;
+		height: 1080px;
+		left: 0px;
+		top: 0px;
+		overflow: visible;
+	}
+	#Rectangle_1 {
+		fill: rgba(183,183,183,1);
+	}
+	.Rectangle_1 {
+		display: none;
+		position: absolute;
+		overflow: visible;
+		width: 1927px;
+		height: 97px;
+		left: -2px;
+		top: -3px;
+	}
+	#IMG_2922-removebg-preview {
+		position: absolute;
+		width: 43.599px;
+		height: 61.856px;
+		left: 40.348px;
+		top: 16.804px;
+		overflow: visible;
+	}
+	#Spazanet {
+		left: 112.82px;
+		top: 36.732px;
+		position: absolute;
+		overflow: visible;
+		width: 102px;
+		white-space: nowrap;
+		line-height: 26.666664123535156px;
+		margin-top: -2.222222328186035px;
+		text-align: left;
+		font-family: Graphik-Bold;
+		font-style: normal;
+		font-weight: normal;
+		font-size: 22.222219467163086px;
+		color: rgba(0,0,0,1);
+	}
+	#Group_1 {
+		position: absolute;
+		width: 590.929px;
+		height: 22.503px;
+		left: 607.054px;
+		top: 37.884px;
+		overflow: visible;
+	}
+	#Municipalities_m {
+		left: 446.929px;
+		top: 0.38px;
+		position: absolute;
+		overflow: visible;
+		width: 145px;
+		white-space: nowrap;
+		line-height: 26.666664123535156px;
+		margin-top: -2.222222328186035px;
+		text-align: left;
+		font-family: Graphik-Regular;
+		font-style: normal;
+		font-weight: normal;
+		font-size: 22.222219467163086px;
+		color: rgba(0,0,0,1);
+	}
+	#Municipalities_m {
+		left: 446.929px;
+		top: 0.38px;
+		position: absolute;
+		overflow: visible;
+		width: 145px;
+		white-space: nowrap;
+		line-height: 26.666664123535156px;
+		margin-top: -2.222222328186035px;
+		text-align: left;
+		font-family: Graphik-Regular;
+		font-style: normal;
+		font-weight: normal;
+		font-size: 22.222219467163086px;
+		color: rgba(0,0,0,1);
+	}
+	#Owner {
+		left: 0px;
+		top: 0.02px;
+		position: absolute;
+		overflow: visible;
+		width: 71px;
+		white-space: nowrap;
+		line-height: 26.666664123535156px;
+		margin-top: -2.222222328186035px;
+		text-align: left;
+		font-family: Graphik-Regular;
+		font-style: normal;
+		font-weight: normal;
+		font-size: 22.222219467163086px;
+		color: rgba(0,0,0,1);
+	}
+	#Store {
+		left: 142.915px;
+		top: 0.503px;
+		position: absolute;
+		overflow: visible;
+		width: 57px;
+		white-space: nowrap;
+		line-height: 26.666664123535156px;
+		margin-top: -2.222222328186035px;
+		text-align: left;
+		font-family: Graphik-Regular;
+		font-style: normal;
+		font-weight: normal;
+		font-size: 22.222219467163086px;
+		color: rgba(0,0,0,1);
+	}
+	#Compliance {
+		left: 260.381px;
+		top: 0px;
+		position: absolute;
+		overflow: visible;
+		width: 127px;
+		white-space: nowrap;
+		line-height: 26.666664123535156px;
+		margin-top: -2.222222328186035px;
+		text-align: left;
+		font-family: Graphik-Regular;
+		font-style: normal;
+		font-weight: normal;
+		font-size: 22.222219467163086px;
+		color: rgba(0,0,0,1);
+	}
+	#Rectangle_2 {
+		fill: rgba(250,218,122,1);
+	}
+	.Rectangle_2 {
+		position: absolute;
+		overflow: visible;
+		width: 1778.63px;
+		height: 664.39px;
+		left: 58.96px;
+		top: 254.53px;
+	}
+	#unnamed-removebg-preview {
+		position: absolute;
+		width: 1044px;
+		height: 695px;
+		left: 794px;
+		top: 224px;
+		overflow: visible;
+	}
+	#Making_local_shops_safe_for_ev {
+		left: 271.88px;
+		top: 795.666px;
+		position: absolute;
+		overflow: visible;
+		width: 447px;
+		white-space: nowrap;
+		line-height: 30.000001907348633px;
+		margin-top: -2.5000009536743164px;
+		text-align: left;
+		font-family: Graphik-Medium;
+		font-style: normal;
+		font-weight: normal;
+		font-size: 25px;
+		color: rgba(0,0,0,1);
+	}
+	#WELCOME_TO {
+		left: 129.127px;
+		top: 364.155px;
+		position: absolute;
+		overflow: visible;
+		width: 231px;
+		white-space: nowrap;
+		line-height: 39.999996185302734px;
+		margin-top: -3.333333969116211px;
+		text-align: left;
+		font-family: Graphik-Bold;
+		font-style: normal;
+		font-weight: normal;
+		font-size: 33.33332824707031px;
+		color: rgba(0,0,0,1);
+	}
+	#NALEDI_______PLATFORM {
+		left: 138.708px;
+		top: 495.179px;
+		position: absolute;
+		overflow: visible;
+		width: 604px;
+		white-space: nowrap;
+		line-height: 100.00001525878906px;
+		margin-top: -8.333335876464844px;
+		text-align: left;
+		font-family: Graphik-Bold;
+		font-style: normal;
+		font-weight: normal;
+		font-size: 83.33334350585938px;
+		color: rgba(0,0,0,1);
+	}
+	#Group_2 {
+		position: absolute;
+		width: 170.169px;
+		height: 22.63px;
+		left: 1678.485px;
+		top: 38.329px;
+		overflow: visible;
+	}
+	#Login {
+		left: 0px;
+		top: 0.63px;
+		position: absolute;
+		overflow: visible;
+		width: 59px;
+		white-space: nowrap;
+		line-height: 26.666664123535156px;
+		margin-top: -2.222222328186035px;
+		text-align: left;
+		font-family: Graphik-Regular;
+		font-style: normal;
+		font-weight: normal;
+		font-size: 22.222219467163086px;
+		color: rgba(0,0,0,1);
+	}
+	#Sign_Up {
+		left: 88.169px;
+		top: 0.63px;
+		position: absolute;
+		overflow: visible;
+		width: 83px;
+		white-space: nowrap;
+		line-height: 26.666664123535156px;
+		margin-top: -2.222222328186035px;
+		text-align: left;
+		font-family: Graphik-Regular;
+		font-style: normal;
+		font-weight: normal;
+		font-size: 22.222219467163086px;
+		color: rgba(0,0,0,1);
+	}
+	# {
+		left: 66.7px;
+		top: 0px;
+		position: absolute;
+		overflow: visible;
+		width: 10px;
+		white-space: nowrap;
+		line-height: 26.666664123535156px;
+		margin-top: -2.222222328186035px;
+		text-align: left;
+		font-family: Graphik-Regular;
+		font-style: normal;
+		font-weight: normal;
+		font-size: 22.222219467163086px;
+		color: rgba(0,0,0,1);
+	}
+	#Component_1__4 {
+		position: absolute;
+		width: 120px;
+		height: 25px;
+		left: 1249px;
+		top: 38px;
+		overflow: visible;
+	}
+	#Rectangle_1_ {
+		fill: transparent;
+	}
+	.Rectangle_1_ {
+		position: absolute;
+		overflow: visible;
+		width: 120px;
+		height: 22px;
+		left: 0px;
+		top: 0px;
+	}
+	#Rectangle_2_ {
+		fill: transparent;
+	}
+	.Rectangle_2_ {
+		position: absolute;
+		overflow: visible;
+		width: 120px;
+		height: 22px;
+		left: 0px;
+		top: 3px;
+	}
+	#Line_1 {
+		fill: transparent;
+		stroke: rgba(112,112,112,1);
+		stroke-width: 1px;
+		stroke-linejoin: miter;
+		stroke-linecap: butt;
+		stroke-miterlimit: 4;
+		shape-rendering: auto;
+	}
+	.Line_1 {
+		overflow: visible;
+		position: absolute;
+		width: 4.809px;
+		height: 6.088px;
+		left: 107.5px;
+		top: 8.5px;
+		transform: matrix(1,0,0,1,0,0);
+	}
+	#Line_2 {
+		fill: transparent;
+		stroke: rgba(112,112,112,1);
+		stroke-width: 1px;
+		stroke-linejoin: miter;
+		stroke-linecap: butt;
+		stroke-miterlimit: 4;
+		shape-rendering: auto;
+	}
+	.Line_2 {
+		overflow: visible;
+		position: absolute;
+		width: 4.809px;
+		height: 6.088px;
+		left: 111.5px;
+		top: 8.5px;
+		transform: matrix(1,0,0,1,0,0);
+	}
+	#About {
+		left: 10px;
+		top: 0.25px;
+		position: absolute;
+		overflow: visible;
+		width: 64px;
+		white-space: nowrap;
+		line-height: 26.666664123535156px;
+		margin-top: -2.222222328186035px;
+		text-align: left;
+		font-family: Graphik-Regular;
+		font-style: normal;
+		font-weight: normal;
+		font-size: 22.222219467163086px;
+		color: rgba(0,0,0,1);
+	}
+
+
+Messages:
+1. Exported image: Background.png (37.8k)
+2. Exported image: Background@2x.png (147.1k)
+3. Exported image: IMG_2922-removebg-preview.png (3.1k)
+4. Exported image: IMG_2922-removebg-preview@2x.png (8.8k)
+5. Exported image: unnamed-removebg-preview.png (1.3MB)
+6. Exported image: unnamed-removebg-preview@2x.png (3.98MB)
+7. Exported image: Total image size 1.34MB
+
+Warnings:
+1. Model already added: Model already added for Text named "Municipalities"
+2. ID truncated: The auto generated ID starting with 'Making_local_shops_…' was truncated
+3. Duplicate ID: The Text named, "Municipalities" on artboard, "Canvas" was renamed to, "Municipalities_m"
+4. Duplicate ID: The Rectangle named, "Rectangle 1" on artboard, "Canvas" was renamed to, "Rectangle_1_"
+5. Duplicate ID: The Rectangle named, "Rectangle 2" on artboard, "Canvas" was renamed to, "Rectangle_2_"

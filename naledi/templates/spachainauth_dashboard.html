@@ -1,0 +1,188 @@
+{% extends "naledibase.html" %}
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+
+<!-- Link to Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<style>
+    :root {
+        --primary-color: #2c3e50;
+        --border-color: #e0e0e0;
+        --success-color: #27ae60; /* Green */
+        --info-color: #3498db; /* Blue */
+        --warning-color: #e74c3c; /* Red */
+        --pending-color: #f39c12; /* Orange */
+        --background-color: #ffffff;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+        margin: 0;
+        padding: 20px;
+    }
+
+    .card-container {
+        background-color: var(--background-color);
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 24px;
+    }
+
+    .card-header {
+        color: var(--primary-color);
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid var(--border-color);
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+
+    th, td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    th {
+        color: var(--primary-color);
+        font-weight: bold;
+        background-color: #f8f9fa;
+    }
+
+    td {
+        color: #333;
+    }
+
+    .status-icon {
+        font-size: 18px;
+        display: flex;
+        justify-content: center;
+    }
+
+    .status-icon.submitted {
+        color: var(--success-color); /* Green tick */
+    }
+
+    .status-icon.reviewed {
+        color: var(--info-color); /* Blue tick */
+    }
+
+    .status-icon.approved {
+        color: var(--success-color); /* Green tick */
+    }
+
+    .status-icon.pending {
+        color: var(--pending-color); /* Orange clock */
+    }
+
+    .status-icon.warning {
+        color: var(--warning-color); /* Red exclamation */
+    }
+    .status-icon {
+    font-size: 18px;
+    display: inline-flex;
+    align-items: center;
+    font-weight: bold;
+}
+
+.status-icon i {
+    margin-right: 5px;
+}
+
+/* ✅ Green for compliant */
+.compliant {
+    color: var(--success-color);
+}
+
+/* ❌ Orange for pending */
+.pending {
+    color: var(--pending-color);
+}
+</style>
+
+<section style="background-color: #eee;">
+    <div class="card-container">
+        <div class="card-header">Document Status</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Document</th>
+                    <th>Submitted</th>
+                    <th>Reviewed</th>
+                    <th>Approved</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for doc in submitted_docs %}
+                    <tr>
+                        <td>{{ doc.name }}</td>
+                        <td>
+                            <div class="status-icon {{ doc.submitted }}">
+                                <i class="fas fa-{{ 'check' if doc.submitted == 'submitted' else 'clock' if doc.submitted == 'pending' else 'exclamation-triangle' }}"></i>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="status-icon {{ doc.reviewed }}">
+                                <i class="fas fa-{{ 'check' if doc.reviewed == 'reviewed' else 'clock' if doc.reviewed == 'pending' else 'exclamation-triangle' }}"></i>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="status-icon {{ doc.approved }}">
+                                <i class="fas fa-{{ 'check' if doc.approved == 'approved' else 'clock' if doc.approved == 'pending' else 'exclamation-triangle' }}"></i>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="card-container">
+        <div class="card-header">Health Compliance Status</div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Compliance Item</th>
+                    <th>Compliant Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- ✅ Display Compliant Items -->
+                {% for item in compliance_data.compliant %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>
+                            <div class="status-icon compliant">
+                                <i class="fa-solid fa-check"></i> Compliant
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+    
+                <!-- ❌ Display Missing Items -->
+                {% for item in compliance_data.missing %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>
+                            <div class="status-icon pending">
+                                <i class="fa-solid fa-exclamation-triangle"></i> Pending
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+
+{% endblock %}

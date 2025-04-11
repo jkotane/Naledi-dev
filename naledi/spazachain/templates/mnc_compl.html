@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+
+<section style="background-color: #eee;">
+    <div class="container py-5">
+      <div class="row">
+        <!-- Left Card -->
+        <div class="col-lg-4">
+          <div class="card mb-4">
+            <div class="card-body text-center">
+              <h5 class="my-3">Municipal Services</h5>
+              <div class="d-flex flex-column align-items-center">
+                <a href="#health-details" class="text-decoration-none text-center mb-3">
+                  <img src="{{ url_for('static', filename='images/Health_checklist.jpg') }}" alt="Health" width="100" height="100" />
+                  <p class="mt-2 mb-0 text-muted">Health</p>
+                </a>
+                <a href="#fire-details" class="text-decoration-none text-center mb-3">
+                  <img src="{{ url_for('static', filename='images/safety.jpg') }}" alt="Fire" width="100" height="100" />
+                  <p class="mt-2 mb-0 text-muted">Fire</p>
+                </a>
+                <a href="#zoning-details" class="text-decoration-none text-center mb-3">
+                  <img src="{{ url_for('static', filename='images/zoning.jpg') }}" alt="Zoning" width="100" height="100" />
+                  <p class="mt-2 mb-0 text-muted">Zoning</p>
+                </a>
+                <a href="#electrical-details" class="text-decoration-none text-center mb-3">
+                  <img src="{{ url_for('static', filename='images/electrical.jpg') }}" alt="Electrical" width="100" height="100" />
+                  <p class="mt-2 mb-0 text-muted">Electrical</p>
+                </a>
+                <a href="#building-plans-details" class="text-decoration-none text-center">
+                  <img src="{{ url_for('static', filename='images/house_plan.jpg') }}" alt="Building Plans" width="100" height="100" />
+                  <p class="mt-2 mb-0 text-muted">Building Plans</p>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Right Column -->
+        <div class="col-lg-8">
+          <!-- Details Section: Health -->
+          <div id="health-details" class="card mb-4">
+            <div class="card-header bg-primary text-white">
+              <h5 class="mb-0">Health Inspection Details</h5>
+            </div>
+            <div class="card-body">
+              <form>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="health-sanitary">
+                  <label class="form-check-label" for="health-sanitary">Sanitary facilities</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="health-cleaning">
+                  <label class="form-check-label" for="health-cleaning">Cleaning facilities</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="health-handwashing">
+                  <label class="form-check-label" for="health-handwashing">Handwashing stations</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="health-waste">
+                  <label class="form-check-label" for="health-waste">Waste disposal methods</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="health-food">
+                  <label class="form-check-label" for="health-food">Food handling protocols</label>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- Details Section: Fire -->
+          <div id="fire-details" class="card mb-4">
+            <div class="card-header bg-danger text-white">
+              <h5 class="mb-0">Fire Inspection Details</h5>
+            </div>
+            <div class="card-body">
+              <form>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="fire-extinguishers">
+                  <label class="form-check-label" for="fire-extinguishers">Fire extinguishers available and operational</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="fire-smoke-detectors">
+                  <label class="form-check-label" for="fire-smoke-detectors">Smoke detectors installed and functional</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="fire-emergency-exits">
+                  <label class="form-check-label" for="fire-emergency-exits">Emergency exits clearly marked</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="fire-evacuation-plan">
+                  <label class="form-check-label" for="fire-evacuation-plan">Evacuation plan posted</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="fire-flammable-materials">
+                  <label class="form-check-label" for="fire-flammable-materials">Flammable materials stored safely</label>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- Details Section: Zoning -->
+          <div id="zoning-details" class="card mb-4">
+            <div class="card-header bg-success text-white">
+              <h5 class="mb-0">Zoning Compliance Details</h5>
+            </div>
+            <div class="card-body">
+              <form>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="zoning-business-type">
+                  <label class="form-check-label" for="zoning-business-type">Business type aligns with zoning regulations</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="zoning-boundaries">
+                  <label class="form-check-label" for="zoning-boundaries">Property boundaries are respected</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="zoning-noise">
+                  <label class="form-check-label" for="zoning-noise">Noise levels are within permissible limits</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="zoning-parking">
+                  <label class="form-check-label" for="zoning-parking">Parking requirements met</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="zoning-environmental-impact">
+                  <label class="form-check-label" for="zoning-environmental-impact">Environmental impact assessed</label>
+                </div>
+              </form>
+            </div>
+          </div>
+
+
+
+
+          
+          <!-- Add similar form-check items for "Electrical" and "Building Plans" -->
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+{% endblock %}

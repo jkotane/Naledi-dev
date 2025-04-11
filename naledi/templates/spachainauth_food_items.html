@@ -1,0 +1,58 @@
+{% extends "naledibase.html" %}
+
+{% block title %}Food Items{% endblock %}
+
+{% block content %}
+<section style="background-color: #f9f9f9;">
+    <div class="container py-4">
+        <h3>Food Items Provided</h3>
+        <form method="POST" action="{{ url_for('spachainauth.spachainauth_food_items') }}">
+            <div class="card shadow-sm mb-3" style="border-radius: 12px;">
+                <div class="card-body">
+                    <h5 class="card-title">Select the food items you provide:</h5>
+                    <ul class="list-unstyled">
+                        <li>
+                            <input type="checkbox" name="food_items" value="Bakery Products" id="food-bakery">
+                            <label for="food-bakery" class="ms-2">Bakery Products (e.g., bread, pastries)</label>
+                        </li>
+                        <li>
+                            <input type="checkbox" name="food_items" value="Dairy Products" id="food-dairy">
+                            <label for="food-dairy" class="ms-2">Dairy Products (e.g., milk, cheese)</label>
+                        </li>
+                        <li>
+                            <input type="checkbox" name="food_items" value="Meat and Poultry" id="food-meat">
+                            <label for="food-meat" class="ms-2">Meat and Poultry</label>
+                        </li>
+                        <li>
+                            <input type="checkbox" name="food_items" value="Seafood" id="food-seafood">
+                            <label for="food-seafood" class="ms-2">Seafood</label>
+                        </li>
+                        <li>
+                            <input type="checkbox" name="food_items" value="Fresh Produce" id="food-produce">
+                            <label for="food-produce" class="ms-2">Fresh Produce (e.g., fruits, vegetables)</label>
+                        </li>
+                        <li>
+                            <input type="checkbox" name="food_items" value="Packaged Foods" id="food-packaged">
+                            <label for="food-packaged" class="ms-2">Packaged Foods (e.g., canned goods, snacks)</label>
+                        </li>
+                        <li>
+                            <input type="checkbox" name="food_items" value="Beverages" id="food-beverages">
+                            <label for="food-beverages" class="ms-2">Beverages (e.g., juices, soft drinks)</label>
+                        </li>
+                        <li>
+                            <input type="checkbox" name="food_items" value="Confectionery" id="food-confectionery">
+                            <label for="food-confectionery" class="ms-2">Confectionery (e.g., sweets, chocolates)</label>
+                        </li>
+                        <li>
+                            <input type="checkbox" name="food_items" value="Other" id="food-other">
+                            <label for="food-other" class="ms-2">Other</label>
+                            <input type="text" name="food_other" class="form-control mt-2" placeholder="Specify other food items">
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</section>
+{% endblock %}

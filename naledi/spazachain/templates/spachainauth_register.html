@@ -1,0 +1,141 @@
+{% extends "naledi/naledibase.html" %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h3 class="text-center">Register</h3>
+  <form method="POST" action="{{ url_for('spachainauth.spachainauth_register') }}">
+    {{ form.hidden_tag() if form else "" }}
+
+    <!-- Type of Business -->
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label for="businessType" class="form-label">Type of Business</label>
+        <select id="businessType" name="businessType" class="form-control {% if 'businessType' in missing_fields %}is-invalid{% endif %}" required>
+          <option value="" disabled {% if not registration or not registration.business_type %}selected{% endif %}>Select your business type</option>
+          <option value="Tuck Shop" {% if registration and registration.business_type == 'Tuck Shop' %}selected{% endif %}>Tuck Shop</option>
+          <option value="Butcher" {% if registration and registration.business_type == 'Butcher' %}selected{% endif %}>Butcher</option>
+          <option value="Guest House" {% if registration and registration.business_type == 'Guest House' %}selected{% endif %}>Guest House</option>
+          <option value="Home Enterprise" {% if registration and registration.business_type == 'Home Enterprise' %}selected{% endif %}>Home Enterprise</option>
+          <option value="General Dealer" {% if registration and registration.business_type == 'General Dealer' %}selected{% endif %}>General Dealer</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- First Name and Last Name -->
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label for="firstName" class="form-label">First Name</label>
+        <input type="text" id="firstName" name="firstName" class="form-control {% if 'firstName' in missing_fields %}is-invalid{% endif %}" value="{{ registration.first_name if registration else '' }}" required>
+      </div>
+      <div class="col-md-6">
+        <label for="lastName" class="form-label">Last Name</label>
+        <input type="text" id="lastName" name="lastName" class="form-control {% if 'lastName' in missing_fields %}is-invalid{% endif %}" value="{{ registration.last_name if registration else '' }}" required>
+      </div>
+    </div>
+
+    <!-- Date of Birth -->
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label for="dob" class="form-label">Date of Birth</label>
+        <input type="date" id="dob" name="dob" class="form-control {% if 'dob' in missing_fields %}is-invalid{% endif %}" value="{{ registration.dob if registration and registration.dob else '' }}" required>
+
+      </div>
+
+      <!-- Gender -->
+      <div class="col-md-6">
+        <label class="form-label">Gender</label>
+        <div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="gender" id="female" value="Female" {% if registration and registration.gender == 'Female' %}checked{% endif %} required>
+            <label class="form-check-label" for="female">Female</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="gender" id="male" value="Male" {% if registration and registration.gender == 'Male' %}checked{% endif %} required>
+            <label class="form-check-label" for="male">Male</label>
+          </div>
+        </div>
+      </div>
+    </div>
+       <!-- Citizenship -->
+     <div class="row mb-3">
+        <div class="col-md-6">
+          <label for="citizenship" class="form-label">Citizenship</label>
+          <select id="citizenship" name="citizenship" class="form-control {% if 'citizenship' in missing_fields %}is-invalid{% endif %}" value ="{{ registration.citizenship if registration else '' }} " required>
+            <option value="" disabled selected>Select your country</option>
+            <option value="South Africa">South Africa</option>
+            <option value="United States">United States</option>
+            <option value="United Kingdom">United Kingdom</option>
+            <option value="Zimbabwe">Zimbabwe</option>
+            <option value="Nigeria">Nigeria</option>
+          </select>
+        </div>
+    </div>
+    <!-- South Africa ID -->
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label for="saId" class="form-label">South Africa Identity Number</label>
+        <input type="text" id="saId" name="saId" class="form-control {% if 'saId' in missing_fields %}is-invalid{% endif %}" value="{{ registration.id_number if registration else '' }}" required>
+      </div>
+      <div class="col-md-6">
+        <label for="passportNo" class="form-label">Passport Number (optional)</label>
+        <input type="text" id="passportNo" name="passportNo" class="form-control" value="{{ registration.passport_number if registration else '' }}">
+      </div>
+    </div>
+
+      
+      <!-- Address -->
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label for="streetAddress" class="form-label">Street Address</label>
+          <input type="text" id="streetAddress" name="streetAddress" class="form-control {% if 'streetAddress' in missing_fields %}is-invalid{% endif %}" value ="{{ registration.streetAddress if registration else '' }} " required>
+        </div>
+        <div class="col-md-6">
+          <label for="address2" class="form-label">Address Line 2</label>
+          <input type="text" id="address2" name="address2" class="form-control {% if 'address2' in missing_fields %}is-invalid{% endif %}" value ="{{ registration.address2 if registration else '' }} " required>
+
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label for="city" class="form-label">City</label>
+          <input type="text" id="city" name="city" class="form-control {% if 'city' in missing_fields %}is-invalid{% endif %}" value ="{{ registration.city if registration else '' }} " required>
+        </div>
+        <div class="col-md-6">
+          <label for="postcode" class="form-label">Postal Code</label>
+          <input type="text" id="postcode" name="postcode" class="form-control {% if 'postcode' in missing_fields %}is-invalid{% endif %}" value ="{{ registration.postcode if registration else '' }} " required>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label for="province" class="form-label">Province</label>
+          <select id="province" name="province" class="fform-control {% if 'province' in missing_fields %}is-invalid{% endif %}" value ="{{ registration.province if registration else '' }} " required>
+            <option value="" disabled selected {% if not registration or not registration.province %}selected{% endif %}>Select your province</option>
+            <option value="Eastern Cape" {% if registration and registration.business_type == 'Eastern Cape' %}selected{% endif %}>Eastern Cape</option>
+            <option value="Free State"  {% if registration and registration.business_type == 'Free State' %}selected{% endif %} >Free State</option>
+            <option value="Gauteng" {% if registration and registration.business_type == 'Gauteng' %}selected{% endif %}>Gauteng </option>
+            <option value="KwaZulu-Natal" {% if registration and registration.business_type == 'KwaZulu-Natal' %}selected{% endif %}>KwaZulu-Natal</option>
+            <option value="Limpopo" {% if registration and registration.business_type == 'Limpopo' %}selected{% endif %}>Limpopo</option>
+            <option value="Mpumalanga" {% if registration and registration.business_type == 'Mpumalanga' %}selected{% endif %}>Mpumalanga</option>
+            <option value="Northern Cape" {% if registration and registration.business_type == 'Northern Cape' %}selected{% endif %}>Northern Cape</option>
+            <option value="North West" {% if registration and registration.business_type == 'North West' %}selected{% endif %}>North West</option>
+            <option value="Western Cape" {% if registration and registration.business_type == 'Western Cape' %}selected{% endif %}>Western Cape</option>
+          </select>
+        </div>
+      </div>
+  
+      <select id="municipality" name="municipality" class="form-control {% if 'municipality' in missing_fields %}is-invalid{% endif %}" value ="{{ registration.municipality if registration else '' }} " required>
+        <option value="" disabled selected>Select your municipality</option>
+    </select>
+
+    <!-- Submit Buttons -->
+    <div class="text-left">
+      <button type="submit" class="btn btn-primary btn-lg">Apply</button>
+    </div>
+  </form>
+</div>
+
+<script src="{{ url_for('static', filename='js/toggleFields.js') }}"></script>
+<script src="{{ url_for('static', filename='js/mncDropdown.js') }}"></script>
+{% endblock %}

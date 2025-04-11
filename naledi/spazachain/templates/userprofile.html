@@ -1,0 +1,9 @@
+<h1>User Profile</h1>
+<form method="POST">
+    {{ form.hidden_tag() }}
+    {{ form.name.label }} {{ form.name }}
+    {{ form.surname.label }} {{ form.surname }}
+    {{ form.email.label }} {{ form.email }}
+    {{ form.cellno.label }} {{ form.cellno }}
+    {{ form.submit }}
+</form>

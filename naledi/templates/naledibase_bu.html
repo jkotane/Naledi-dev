@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+        rel="stylesheet"
+        href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+        crossorigin="anonymous"
+    />
+    <link
+        rel="stylesheet"
+        href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+        crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/progress.css') }}">
+
+    <title>{% block title %}Home{% endblock %}</title>
+    <style>
+        .smooth-rectangle {
+            background-color: #FFD700;
+            border-radius: 20px;
+            padding: 50px;
+            margin: 40px auto;
+            width: 100%;
+            max-width: 1200px;
+            height: auto;
+            text-align: left;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .smooth-rectangle h1,
+        .smooth-rectangle p {
+            flex: 1;
+            font-size: 1.5rem;
+            min-width: 250px;
+        }
+
+        .overlay-image {
+            position: relative;
+            max-width: 500px;
+            height: auto;
+            margin-left: auto;
+            transform: translateX(30px);
+        }
+
+        .progress-container {
+            width: 100%;
+            max-width: 1200px; /* Match the width of .smooth-rectangle */
+            margin: 20px auto; /* Center the progress bar */
+        }
+
+        .progress-bar-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            width: 100%;
+            gap: 20px; /* Adjust spacing between circles */
+        }
+
+        .progress-line {
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 80px); /* Adjust based on circle size and spacing */
+            height: 5px;
+            background-color: grey;
+            z-index: 1;
+        }
+
+        .progress-item {
+            text-align: center;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 2;
+        }
+
+        .progress-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            position: relative;
+        }
+
+        .completed {
+            background-color: #28a745;
+        }
+
+        .in-progress {
+            background-color: #FFC107;
+        }
+
+        .not-started {
+            background-color: #DC3545;
+        }
+
+        /* Responsive Design for Mobile Devices */
+        @media (max-width: 768px) {
+            .smooth-rectangle {
+                padding: 30px;
+                margin: 20px auto;
+            }
+
+            .smooth-rectangle h1,
+            .smooth-rectangle p {
+                font-size: 1.2rem;
+            }
+
+            .overlay-image {
+                max-width: 150px;
+                transform: translateX(15px);
+            }
+
+            .progress-bar-container {
+                gap: 10px; /* Reduce spacing between circles for mobile */
+            }
+
+            .progress-circle {
+                width: 30px;
+                height: 30px;
+                font-size: 0.9rem;
+            }
+
+            .progress-line {
+                width: calc(100% - 60px); /* Adjust for smaller circles */
+            }
+
+            .progress-item span {
+                font-size: 0.8rem; /* Smaller text for mobile */
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <img src="{{ url_for('static', filename='images/spazachain.png') }}" alt="Logo" width="50" height="50" />
+                Spazanet
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbar">
+                <div class="navbar-nav navbar-nav-left">
+                    {% if current_user.is_authenticated %}
+                        <!-- Menu for Spaza users -->
+                        <a class="nav-item nav-link" href="{{ url_for('spachainauth.spachainauth_home') }}">Home</a>
+                        <a class="nav-item nav-link" href="{{ url_for('spachainauth.spachainauth_register') }}">Register</a>
+                        <a class="nav-item nav-link" href="{{ url_for('spachainauth.spachainauth_store') }}">Store</a>
+                        <a class="nav-item nav-link" href="{{ url_for('spachainauth.spachainauth_upload_docs') }}">Documents</a>
+                        <a class="nav-item nav-link" href="{{ url_for('naledi.naledi_services') }}">Services</a>
+                    {% else %}
+                        <a class="nav-item nav-link" href="{{ url_for('naledi.naledi_howner') }}">Owner</a>
+                        <a class="nav-item nav-link" href="{{ url_for('naledi.naledi_hstore') }}">Store</a>
+                        <a class="nav-item nav-link" href="{{ url_for('naledi.naledi_hcomp') }}">Compliance</a>
+                        <a class="nav-item nav-link" href="{{ url_for('naledi.naledi_hmnc') }}">Municipalities</a>
+                        <a class="nav-item nav-link" href="{{ url_for('naledi.naledi_services') }}">Services</a>
+                    {% endif %}
+                </div>
+                <div class="navbar-nav navbar-nav-right">
+                    {% if current_user.is_authenticated %}
+                        <a class="nav-item nav-link" href="{{ url_for('naledi.naledi_logout') }}">Logout</a>
+                    {% else %}
+                        <a class="nav-item nav-link" href="{{ url_for('naledi.naledi_login') }}">Login</a>
+                        <a class="nav-item nav-link" href="{{ url_for('naledi.naledi_sign_up') }}">Sign Up</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="smooth-rectangle">
+        <div class="text-container">
+            <h1><strong>WELCOME TO</strong></h1>
+            <p><strong>NALEDI PLATFORM</strong></p>
+            <p>Making local shops safe for everyone!</p>
+        </div>
+        <img class="overlay-image" src="{{ url_for('static', filename='images/supermarket.png') }}" alt="Overlay Image" width:auto height="500">
+    </div>
+
+    <!-- Progress Bar Below the Yellow Rectangle -->
+    {% if current_user.is_authenticated %}
+        <div class="progress-container">
+            <div class="progress-bar-container">
+                <!-- Grey connecting line -->
+                <div class="progress-line"></div>
+
+                <!-- Progress circles -->
+                <div class="progress-item">
+                    <div class="progress-circle {% if progress.profile_complete %}completed {% else %} not-started{% endif %}">1</div>
+                    <span>Profile</span>
+                </div>
+                <div class="progress-item">                  
+                    <div class="progress-circle {% if progress.registration_complete %}completed{% else %}not-started{% endif %}">2</div>
+                    <span>Registration</span>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-circle {% if progress.store_details_complete %}completed{% else %}not-started{% endif %}">3</div>
+                    <span>Store</span>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-circle {% if progress.documents_uploaded %}completed{% else %}not-started{% endif %}">4</div>
+                    <span>Documents</span>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Flash Message Container -->
+    <div class="container mt-3">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="row">
+                    {% for category, message in messages %}
+                        <div class="col-12">
+                            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                                <strong>{{ message }}</strong>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <div class="container mt-4">
+        {% block content %}{% endblock %}
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" crossorigin="anonymous"></script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+{% extends "officialbase.html" %}
+
+{% block title %}Store Dashboard{% endblock %}
+
+ {% block content %}
+    <div class="container">
+        <h1 class="mt-4">Store Details Dashboard</h1>
+        
+        <div class="card p-3">
+            <h3>Key Metrics</h3>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="alert alert-primary">
+                        <strong>Total Stores:</strong> <span id="total-stores">Loading...</span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="alert alert-success">
+                        <strong>Compliant Stores:</strong> <span id="compliant-stores">Loading...</span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="alert alert-danger">
+                        <strong>Non-Compliant Stores:</strong> <span id="non-compliant-stores">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div> 
+
+        <!-- Charts Section -->
+         <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card p-3">
+                    <h3>Ownership Breakdown</h3>
+                    {{ pie_chart | safe }}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card p-3">
+                    <h3>Stores by City</h3>
+                    {{ bar_chart | safe }}
+                </div>
+            </div>
+        </div> 
+
+        <!-- Store Table -->
+        <div class="card p-3 mt-4">
+            <h3>Store Details</h3>
+            {{ data_table | safe }}
+        </div> 
+    </div> 
+{% endblock %}  

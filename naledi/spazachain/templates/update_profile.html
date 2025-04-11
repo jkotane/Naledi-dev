@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Update Profile{% endblock %}
+
+{% block content %}
+
+<section style="background-color: #eee;">
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-header text-center">
+            <h4>Update Your Profile</h4>
+          </div>
+          <div class="card-body">
+            <form method="POST" action="{{ url_for('spachainauth.update_profile') }}">
+              <div class="form-group">
+                <label for="name">Full Name</label>
+                <input
+                  type="text"
+                  name="name"
+                  class="form-control"
+                  value="{{ user.username or '' }}"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="cellno">Phone Number</label>
+                <input
+                  type="text"
+                  name="cellno"
+                  class="form-control"
+                  value="{{ user.cellno or '' }}"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="address">Address</label>
+                <textarea
+                  name="address"
+                  class="form-control"
+                  rows="3"
+                  required
+                >{{ owner.address or '' }}</textarea>
+              </div>
+              <button type="submit" class="btn btn-primary btn-block">Save Changes</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

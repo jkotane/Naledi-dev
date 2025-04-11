@@ -1,0 +1,20 @@
+{% extends "naledibase.html" %}
+{% block title %}Update  Profile{% endblock %}
+
+{% block content %}
+<h1 class="mt-4 mb-4">User Profile</h1>
+
+<form method="POST">
+    {{ csrf_token() }}
+    <label>Name</label>
+    <input type="text" name="name" value="{{ user.username }}" required>
+
+    <label>Cell Number</label>
+    <input type="text" name="cellno" value="{{ user.cellno }}" required>
+
+    <label>Address</label>
+    <input type="text" name="address" value="{{ user.owner.address if user.owner else '' }}" required>
+
+    <button type="submit">Update</button>
+</form>
+{% endblock %}

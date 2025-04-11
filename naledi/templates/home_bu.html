@@ -1,0 +1,13 @@
+{% extends "naledibase.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="landing-text text-center">
+  <h1>Welcome to Naledi Platform</h1>
+  <p>Making local shops safe for everyone!</p>
+</div>
+      <div class="landing-graphic">
+      <img src="{{ url_for('static', filename='images/kidsstorefront.jpg') }}" alt="Landing Graphic" />
+</div> 
+{% endblock %}

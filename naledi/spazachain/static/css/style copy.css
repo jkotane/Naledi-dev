@@ -1,0 +1,85 @@
+body {
+    background-color: #fff9db; /* Light yellow */
+}
+
+.landing-graphic {
+    margin-top: 20px; /* Adjust margin as needed */
+    text-align: center; /* Center the carousel */
+  }
+  
+  .carousel-item img {
+    max-height: 500px; /* Limit image height */
+    object-fit: cover; /* Maintain aspect ratio and crop excess */
+  }
+  
+  .carousel-indicators button {
+    background-color: #666; /* Customize indicator color */
+  }
+  
+  .carousel-indicators .active {
+    background-color: #000; /* Active indicator color */
+  }
+  
+  /* Flash Message Styles */
+.flash-container {
+  position: fixed;
+  top: 10%;
+  right: 10%;
+  z-index: 1050;
+  width: 80%;
+  max-width: 400px;
+}
+
+.alert-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.alert {
+  font-size: 1rem;
+  border: none;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  animation: slide-in 0.5s ease-in-out;
+}
+
+.separator-icon {
+  position: relative;
+  top: -12px;
+  background: white;
+  padding: 0 10px;
+  font-size: 1.2em;
+  color: gray;
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.login-box {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  width: 100%;
+  max-width: 400px;
+}
+.login-box h3 {
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+.btn-google {
+  background: #db4437;
+  color: white;
+}
+.btn-google:hover {
+  background: #c23321;
+  color: white;
+}

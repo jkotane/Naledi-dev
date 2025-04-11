@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}Registration Details{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <h3 class="text-center">Registration Details</h3>
+  <div class="card shadow-lg mt-4">
+    <div class="card-body">
+      <h5 class="card-title text-center">Your Registration Information</h5>
+      <p class="text-muted text-center">Status: <strong class="text-info">{{ registration.status | capitalize }}</strong></p>
+      <hr>
+      
+      <!-- Personal Information Section -->
+      <h6>Personal Information</h6>
+      <div class="row">
+        <div class="col-md-6">
+          <p><strong>First Name:</strong> {{ registration.first_name }}</p>
+        </div>
+        <div class="col-md-6">
+          <p><strong>Last Name:</strong> {{ registration.last_name }}</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <p><strong>Date of Birth:</strong> 
+            {% if registration and registration.dob %}
+                <!--{{ registration.dob.strftime('%d %B %Y') }} -->
+                {{ registration.dob.strftime('%Y %m %d') }}
+            {% else %}
+                Not provided
+            {% endif %}
+        </p>
+        </div>
+        <div class="col-md-6">
+          <p><strong>Gender:</strong> {{ registration.gender }}</p>
+        </div>
+      </div>
+      <hr>
+
+      <!-- Identity Information Section -->
+      <h6>Identity Information</h6>
+      <div class="row">
+        <div class="col-md-6">
+          <p><strong>SA ID:</strong> {{ registration.id_number if registration.citizenship == 'South Africa' else 'N/A' }}</p>
+        </div>
+        <div class="col-md-6">
+          <p><strong>Passport Number:</strong> {{ registration.passport_number if registration.citizenship != 'South Africa' else 'N/A' }}</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <p><strong>Citizenship:</strong> {{ registration.citizenship }}</p>
+        </div>
+      </div>
+      <hr>
+
+      <!-- Contact Information Section -->
+      <h6>Contact Information</h6>
+      <div class="row">
+        <div class="col-md-6">
+          <p><strong>Street Address:</strong> {{ registration.street_address }}</p>
+        </div>
+        <div class="col-md-6">
+          <p><strong>Address Line 2:</strong> {{ registration.address2 or 'N/A' }}</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <p><strong>City:</strong> {{ registration.city }}</p>
+        </div>
+        <div class="col-md-6">
+          <p><strong>Province:</strong> {{ registration.province }}</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <p><strong>Postal Code:</strong> {{ registration.postal_code }}</p>
+        </div>
+        <div class="col-md-6">
+          <p><strong>District Municipality:</strong> {{ registration.district_mnc }}</p>
+        </div>
+      </div>
+      <hr>
+
+      <!-- Registration Details Section -->
+      <h6>Registration Details</h6>
+      <div class="row">
+        <div class="col-md-6">
+          <p><strong>Business Type:</strong> {{ registration.business_type }}</p>
+        </div>
+        <div class="col-md-6">
+          <p><strong>Registration Status:</strong> 
+            <span class="badge 
+              {% if registration.status == 'completed' %}bg-success{% elif registration.status == 'submitted' %}bg-info{% else %}bg-secondary{% endif %}">
+              {{ registration.status | capitalize }}
+            </span>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Buttons for Further Actions -->
+    <div class="card-footer text-center">
+       <a href="{{ url_for('spachainauth.update_registration') }}" class="btn btn-warning btn-sm me-2">Update Registration</a>
+       <a href="{{ url_for('spachainview.home') }}" class="btn btn-secondary btn-sm">Return to Dashboard</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

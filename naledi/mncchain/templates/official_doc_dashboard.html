@@ -1,0 +1,116 @@
+{% extends "officialbase.html" %}
+
+{% block title %}Official Document Review{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center">Document Review</h2>
+
+    {% for store_id, store_data in store_documents.items() %}
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>{{ store_data.store_name }} (ID: {{ store_id }})</h5>
+        </div>
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Document Type</th>
+                        <th>Uploaded File</th>
+                        <th>Status</th>
+                        <th>Uploaded Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for doc in store_data.documents %}
+                    <tr>
+                        <td>{{ doc.document_type }}</td>
+                        <td>
+                            {% if doc.file_url %}
+                                <!-- View Button to trigger Modal -->
+                                <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#docModal{{ loop.index }}">
+                                    📄 View
+                                </button>
+                        
+                                <!-- Modal -->
+                                <div class="modal fade" id="docModal{{ loop.index }}" tabindex="-1" aria-labelledby="docModalLabel{{ loop.index }}" aria-hidden="true">
+                                    <div class="modal-dialog modal-xl">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="docModalLabel{{ loop.index }}">{{ doc.document_type }}</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body text-center">
+                                                {% if doc.file_url.endswith('.pdf') %}
+                                                    <iframe src="{{ doc.file_url }}" width="100%" height="600px"></iframe>
+                                                {% else %}
+                                                    <img src="{{ doc.file_url }}" alt="{{ doc.document_type }}" class="img-fluid">
+                                                {% endif %}
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button class="btn btn-success" onclick="updateDocStatus('{{ doc.id }}', 'approved')">✅ Approve</button>
+                                                <button class="btn btn-danger" onclick="updateDocStatus('{{ doc.id }}', 'rejected')">❌ Reject</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <span class="text-muted">Not Uploaded</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if doc.approved_status == "approved" %}
+                                <span class="badge bg-success">✅ Approved</span>
+                            {% elif doc.reviewed_status == "pending" %}
+                                <span class="badge bg-warning">🟡 Pending</span>
+                            {% else %}
+                                <span class="badge bg-danger">❌ Rejected</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if doc.uploaded_at %}
+                                {{ doc.uploaded_at.strftime('%Y-%m-%d %H:%M') }}
+                            {% else %}
+                                <span class="text-muted">N/A</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    <script>
+                        function updateDocStatus(documentId, action) {
+                            fetch("/mncview/update_document_status", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                    "X-CSRFToken": "{{ csrf_token() }}"  // If using CSRF protection
+                                },
+                                body: JSON.stringify({
+                                    document_id: documentId,
+                                    action: action
+                                })
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    alert(`Document ${action}ed successfully.`);
+                                    location.reload();  // Reload to update status
+                                } else {
+                                    alert("Error updating status.");
+                                }
+                            });
+                        }
+                        </script>
+
+
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endfor %}
+
+    <div class="text-center mt-4">
+        <a href="{{ url_for('mncview.official_store_dashboard') }}" class="btn btn-secondary">⬅️ Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}

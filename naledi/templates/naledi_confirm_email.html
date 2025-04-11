@@ -1,0 +1,48 @@
+
+{% extends "naledibase.html" %}
+
+{% block title %}Health Self-Assessment{% endblock %}
+
+{% block content %}
+
+<html>
+<head>
+    <title>Confirm Your Email</title>
+</head>
+<body>
+    <h1>Confirm Your Email</h1>
+    <p>Click the link below to confirm your email address:</p>
+    <a href="{{ confirm_url }}">Confirm Email</a>
+</body>
+</html>
+<div class="container mt-4">
+    <div class="row align-items-center">
+      <!-- Graphic Section -->
+      <div class="col-md-6 text-center">
+        <img
+          src="{{ url_for('static', filename='images/kidsstorefront.jpg') }}"
+          alt="Default Landing Graphic"
+          class="img-fluid rounded"
+          width="350"
+          height="350"
+        />
+      </div>
+      <!-- Login Box -->
+      <div class="col-md-6">
+        <div class="login-box p-4 shadow rounded">
+          <h3 class="mb-4 text-center">Confirm Your Email</h3>
+          <p>Click the link below to confirm your email address:</p>
+          <a href="{{ confirm_url }}">Confirm Email</a>
+          <p class="mt-3">
+          
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+{% endblock %}

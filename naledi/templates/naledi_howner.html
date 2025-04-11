@@ -1,0 +1,27 @@
+{% extends "naledibase.html" %}
+
+{% block title %}My Store{% endblock %}
+
+{% block content %}
+<!--<div class="landing-text text-center">
+  <h1>Welcome to Naledi Platform</h1>
+  <p>Making local shops safe for everyone!</p>
+</div> -->
+
+
+<div class="landing-graphic text-center">
+  <div style="display: flex; justify-content: center; gap: 20px;">
+    <img src="{{ url_for('static', filename='images/bb_owner_intro.jpg') }}" alt="Registration Steps" style="width: 35%; height: 55%;" />
+    <img src="{{ url_for('static', filename='images/owner_docs.jpg') }}" alt="Owner docs" style="width: 35%; height: 35%;" />
+  </div>
+</div>
+
+<div class="cta-container text-center" style="margin-top: 20px;">
+ <!-- <button class="btn btn-light">Get Started</button> -->
+
+ <a href="{{ url_for('naledi.naledi_login') }}" class="btn btn-light">Get Started</a>
+  <span style="margin-left: 15px;">Already have an account? <a href="{{ url_for('naledi.naledi_login') }}">Sign in</a></span>
+</div>
+{% endblock %}
+
+

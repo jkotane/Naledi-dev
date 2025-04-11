@@ -1,0 +1,128 @@
+{% extends "naledibase.html" %}
+
+{% block title %}Health Self-Assessment{% endblock %}
+
+{% block content %}
+
+<form method="POST" action="{{ url_for('spachainauth.spachainauth_health_self_check') }}">
+   
+    <!-- Sanitary Facilities Card -->
+    <div class="card mb-3">
+        <div class="card-header">
+            <h5>Sanitary Facilities</h5>
+        </div>
+        <div class="card-body">
+            <label><input type="checkbox" name="sanitary_facilities" value="staff_latrines"> Staff latrines</label><br>
+            <label><input type="checkbox" name="sanitary_facilities" value="customer_latrines"> Customer latrines</label><br>
+            <label><input type="checkbox" name="sanitary_facilities" value="no_latrines"> Shared </label><br>
+        </div>
+    </div>
+
+    <!-- Cleaning Facilities Card -->
+    <div class="card mb-3">
+        <div class="card-header">
+            <h5>Cleaning Facilities</h5>
+        </div>
+        <div class="card-body">
+            <label><input type="checkbox" name="cleaning_facilities" value="sinks_available"> Sinks available</label><br>
+            <label><input type="checkbox" name="cleaning_facilities" value="disinfectants"> Disinfectants provided</label><br>
+            <label><input type="checkbox" name="cleaning_facilities" value="cleaning_tools"> Cleaning tools available</label><br>
+        </div>
+    </div>
+
+    <!-- Hand Washing Stations Card -->
+    <div class="card mb-3">
+        <div class="card-header">
+            <h5>Hand Washing Stations</h5>
+        </div>
+        <div class="card-body">
+            <label><input type="checkbox" name="handwashing_facilities" value="handwashing_soap"> Soap provided </label><br>
+            <label><input type="checkbox" name="handwashing_facilities" value="handwashing_water"> Running water available</label><br>
+            <label><input type="checkbox" name="handwashing_facilities" value="handwashing_dryers"> Clean towels available </label><br>
+        </div>
+    </div>
+
+    <!-- Waste Disposal Methods Card -->
+    <div class="card mb-3">
+        <div class="card-header">
+            <h5>Waste Disposal Methods</h5>
+        </div>
+        <div class="card-body">
+            <label><input type="checkbox" name="waste_disposal" value="waste_regular_collection"> Regular waste collection </label><br>
+            <label><input type="checkbox" name="waste_disposal" value="waste_segregation"> Segregated waste bins</label><br>
+            <label><input type="checkbox" name="waste_disposal" value="waste_bin_lids"> Bins with lids </label><br>
+        </div>
+    </div>
+
+    <!-- Food Handling Protocols Card -->
+    <div class="card mb-3">
+        <div class="card-header">
+            <h5>Food Handling Protocols</h5>
+        </div>
+        <div class="card-body">
+            <label><input type="checkbox" name="food_handling" value="food_handling_training"> Staff trained in food handling</label><br>
+            <label><input type="checkbox" name="food_handling" value="food_handling_gloves"> Staff use gloves</label><br>
+            <label><input type="checkbox" name="food_handling" value="food_handling_containers"> Food stored in sealed containers</label><br>
+            <label><input type="checkbox" name="food_handling" value="food_handling_expiry"> Food expiry dates checked daily</label><br>
+        </div>
+    </div>
+
+    <!-- Food Storage Facilities Card -->
+    <div class="card mb-3">
+        <div class="card-header">
+            <h5>Food Storage Facilities</h5>
+        </div>
+        <div class="card-body">
+            <label><input type="checkbox" name="food_storage" value="food_storage_refrigeration"> Appropriate Fridge(s) temperatures maintained</label><br>
+            <label><input type="checkbox" name="food_storage" value="food_storage_drygoods"> Dry goods stored on shelves</label><br>
+            <label><input type="checkbox" name="food_storage" value="food_storage_pallets"> Pallets elevate goods from ground</label><br>
+        </div>
+    </div>
+
+    <!-- Food Preparation Protocols Card -->
+    <div class="card mb-3">
+        <div class="card-header">
+            <h5>Food Preparation Protocols</h5>
+        </div>
+        <div class="card-body">
+            <label><input type="checkbox" name="food_preparation" value="food_preparation_clean"> Food preparation area clean</label><br>   
+            <label><input type="checkbox" name="food_preparation" value="food_preparation_gloves"> Staff use gloves</label><br>
+            <label><input type="checkbox" name="food_preparation" value="food_preparation_hairnets"> Staff wear hairnets</label><br>
+            <label><input type="checkbox" name="food_preparation" value="food_preparation_aprons"> Staff wear aprons</label><br>
+        </div>
+    </div>
+
+    <!-- Food Preparation Tools Card -->
+    <div class="card mb-3">
+        <div class="card-header">
+            <h5>Food Preparation Tools</h5>
+        </div>
+        <div class="card-body">
+            <label><input type="checkbox" name="food_tools" value="food_tools_clean_surfaces"> Sanitized and clean surfaces</label><br>
+            <label><input type="checkbox" name="food_tools" value="food_tools_cutlery"> Sanitized utensils and cutlery</label><br>
+            <label><input type="checkbox" name="food_tools" value="food_tools_prevention"> Cross contamination prevention methods exist</label><br>
+        </div>
+    </div>
+
+    <!-- Number of Employees Card -->
+    <div class="card mb-3">
+        <div class="card-header">
+            <h5>Number of Employees</h5>
+        </div>
+        <div class="card-body">
+            <label for="men-employed">Men:</label>
+            <input type="number" id="men-employed" name="men_employed" min="0"><br>
+            <label for="women-employed">Women:</label>
+            <input type="number" id="women-employed" name="women_employed" min="0"><br>
+            <label for="total-employed">Total:</label>
+            <input type="number" id="total-employed" name="total_employed" min="0"><br>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+
+</form>
+
+{% endblock %}

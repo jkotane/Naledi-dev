@@ -1,0 +1,39 @@
+{% extends "naledibase.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+{% if current_user.is_authenticated %}
+  <!-- Show personalized content for logged-in users -->
+  <div class="text-center">
+    <h1>Welcome back, {{ current_user.username }}!</h1>
+    <p>Thank you for being part of the Naledi Platform.</p>
+  </div>
+  <div class="landing-graphic">
+    <img src="{{ url_for('static', filename='images/kidsstorefront.jpg') }}" alt="Landing Graphic" />
+  </div>
+{% else %}
+  <!-- Show the graphic and login form for unauthenticated users -->
+  <div class="landing-text text-left">
+    <h1>Registration For Spaza Shops</h1>
+
+    <p>As per the call from President Ramaphosa, all Spaza shops and food handling facilities must register with their local municipalities. As an owner, you are required to ensure that your shop is registered and complies with municipal by-laws, including food safety, zoning, building regulations, fire safety, and environmental laws.</p>
+    
+    <ul>
+        <li><strong>Municipal Registration:</strong> Obtain a trading license/permit from the local municipality.</li>
+        <li><strong>CIPC Registration:</strong> Register the shop as a legal entity with the Companies and Intellectual Property Commission (CIPC).</li>
+    </ul>
+    
+    <p><strong>Note:</strong> Foreign nationals need a valid business visa. Health and safety compliance is crucial for all shops.</p>
+    
+       
+  </div>
+
+  <div class="cta-container text-center" style="margin-top: 20px;">
+    <a href="{{ url_for('naledi.naledi_login') }}" class="btn btn-light">Get Started</a>
+    <span style="margin-left: 15px;">Already have an account? <a href="{{ url_for('naledi.naledi_login') }}">Sign in</a></span>
+  </div>
+  
+  
+{% endif %}
+{% endblock %}

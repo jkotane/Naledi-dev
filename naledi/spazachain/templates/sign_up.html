@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block title %}Sign Up{% endblock %}
+
+{% block graphic_content %}
+<div class="landing-graphic text-center">
+  <img
+    src="{{ url_for('static', filename='images/regsteps.jpg') }}"
+    alt="Sign-Up Landing Graphic"
+    class="img-fluid"
+  />
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h3 class="text-center">Sign Up</h3>
+  
+  <!-- Flash Messages -->
+  {% with messages = get_flashed_messages(with_categories=True) %}
+  {% if messages %}
+  <div class="form-group col-md-6 mx-auto">
+      {% for category, message in messages %}
+      <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      {% endfor %}
+  </div>
+  {% endif %}
+  {% endwith %}
+
+  <!-- Traditional Sign-Up Form -->
+  <form method="POST" action="{{ url_for('spachainauth.sign_up') }}">
+    {{ form.hidden_tag() if form else "" }}
+
+    <div class="form-row">
+      <div class="form-group col-md-6 mx-auto">
+        <label for="firstName">First Name</label>
+        <input
+          type="text"
+          class="form-control"
+          id="firstName"
+          name="firstName"
+          placeholder="Enter first name"
+          required
+        />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group col-md-6 mx-auto">
+        <label for="email">Email Address</label>
+        <input
+          type="email"
+          class="form-control"
+          id="email"
+          name="email"
+          placeholder="Enter email"
+          required
+        />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group col-md-6 mx-auto">
+        <label for="cellno">Cell Number</label>
+        <input
+          type="text"
+          class="form-control"
+          id="cellno"
+          name="cellno"
+          placeholder="Enter cell number"
+          required
+        />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group col-md-6 mx-auto">
+        <label for="password1">Password</label>
+        <input
+          type="password"
+          class="form-control"
+          id="password1"
+          name="password1"
+          placeholder="Enter password"
+          required
+        />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group col-md-6 mx-auto">
+        <label for="password2">Confirm Password</label>
+        <input
+          type="password"
+          class="form-control"
+          id="password2"
+          name="password2"
+          placeholder="Confirm password"
+          required
+        />
+      </div>
+    </div>
+
+    <div class="form-group col-md-6 mx-auto text-left">
+      <button type="submit" class="btn btn-primary btn-lg btn-sm mt-4">Sign Up</button>
+    </div>
+  </form>
+
+  <!-- OR Separator -->
+  
+  <div class="form-group col-md-6 mx-auto text-center mt-4">
+    <div style="border-top: 1px solid #ccc; position: relative; text-align: center;">
+      <span style="position: relative; top: -10px; background: white; padding: 0 10px; color: gray; font-weight: bold;">OR</span>
+    </div>
+  </div>
+
+  <!-- Google Sign-Up Button -->
+  <div class="form-group col-md-6 mx-auto text-center">
+    <a href="{{ url_for('spachainauth.google_auth') }}" class="btn btn-google btn-lg w-100">
+      <i class="fab fa-google"></i> Sign Up with Google
+    </a>
+  </div>
+</div>
+{% endblock %}
+

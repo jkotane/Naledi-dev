@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+
+{% block title %}Health Service{% endblock %}
+
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Compliance Checklist</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        section {
+            margin-bottom: 20px;
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            color: #34495e;
+            margin-bottom: 15px;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: #fff;
+        }
+        .requirement {
+            font-weight: bold;
+        }
+        .form-check {
+            display: flex;
+            align-items: center;
+        }
+        .form-check input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        .action {
+            margin-top: 5px;
+            font-style: italic;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <h1>Health Compliance Checklist</h1>
+
+    <!-- Facility Hygiene Section -->
+    <section>
+        <h2>Facility Hygiene</h2>
+        <ul>
+            <li>
+                <div class="form-check">
+                    <input type="checkbox" id="facility-clean">
+                    <label for="facility-clean" class="requirement">Floors, walls, and ceilings are clean and in good repair.</label>
+                </div>
+                <div class="action">Action: Clean and repair any visible dirt, mold, or structural damage on surfaces.</div>
+            </li>
+            <li>
+                <div class="form-check">
+                    <input type="checkbox" id="waste-disposal">
+                    <label for="waste-disposal" class="requirement">Proper waste disposal methods are in place.</label>
+                </div>
+                <div class="action">Action: Replace damaged bins, ensure lids are functional, and set a schedule for waste disposal.</div>
+            </li>
+        </ul>
+    </section>
+
+    <!-- Food Storage and Handling Section -->
+    <section>
+        <h2>Food Storage and Handling</h2>
+        <ul>
+            <li>
+                <div class="form-check">
+                    <input type="checkbox" id="refrigeration">
+                    <label for="refrigeration" class="requirement">Refrigeration units maintain appropriate temperatures.</label>
+                </div>
+                <div class="action">Action: Regularly monitor and record temperatures; service malfunctioning refrigeration units.</div>
+            </li>
+            <li>
+                <div class="form-check">
+                    <input type="checkbox" id="dry-goods">
+                    <label for="dry-goods" class="requirement">Dry goods are stored off the floor.</label>
+                </div>
+                <div class="action">Action: Provide shelving or pallets to elevate goods from the floor.</div>
+            </li>
+        </ul>
+    </section>
+
+    <!-- Staff Hygiene Section -->
+    <section>
+        <h2>Staff Hygiene</h2>
+        <ul>
+            <li>
+                <div class="form-check">
+                    <input type="checkbox" id="personal-hygiene">
+                    <label for="personal-hygiene" class="requirement">Employees practice proper personal hygiene.</label>
+                </div>
+                <div class="action">Action: Train staff on handwashing techniques, provide gloves and uniforms, and implement hygiene policies.</div>
+            </li>
+            <li>
+                <div class="form-check">
+                    <input type="checkbox" id="handwashing">
+                    <label for="handwashing" class="requirement">Handwashing stations are available and functional.</label>
+                </div>
+                <div class="action">Action: Fix any broken stations and ensure they are stocked daily with necessary supplies.</div>
+            </li>
+        </ul>
+    </section>
+
+    <!-- Pest Control Section -->
+    <section>
+        <h2>Pest Control</h2>
+        <ul>
+            <li>
+                <div class="form-check">
+                    <input type="checkbox" id="no-pests">
+                    <label for="no-pests" class="requirement">No signs of pests or vermin in the facility.</label>
+                </div>
+                <div class="action">Action: Hire a pest control service for inspection and treatment if pests are detected.</div>
+            </li>
+            <li>
+                <div class="form-check">
+                    <input type="checkbox" id="seals-barriers">
+                    <label for="seals-barriers" class="requirement">Seals and barriers prevent pest entry.</label>
+                </div>
+                <div class="action">Action: Repair damaged seals, screens, or barriers to secure entry points.</div>
+            </li>
+        </ul>
+    </section>
+
+    <!-- Licensing and Documentation Section -->
+    <section>
+        <h2>Licensing and Documentation</h2>
+        <ul>
+            <li>
+                <div class="form-check">
+                    <input type="checkbox" id="valid-permits">
+                    <label for="valid-permits" class="requirement">Valid permits and certifications are displayed.</label>
+                </div>
+                <div class="action">Action: Renew expired permits and ensure they are visible in the facility.</div>
+            </li>
+            <li>
+                <div class="form-check">
+                    <input type="checkbox" id="logs-maintained">
+                    <label for="logs-maintained" class="requirement">Temperature logs and cleaning schedules are maintained.</label>
+                </div>
+                <div class="action">Action: Establish a log system and assign staff responsibility for updates.</div>
+            </li>
+        </ul>
+    </section>
+</body>
+{% endblock %}

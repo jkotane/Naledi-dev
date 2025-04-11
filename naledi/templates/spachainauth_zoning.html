@@ -1,0 +1,46 @@
+{% extends "naledibase.html" %}
+
+{% block title %}Health Self-Assessment{% endblock %}
+
+{% block content %}
+
+<section style="background-color: #f9f9f9;">
+    <div class="container py-4">
+        <div class="row">
+              <!-- Zoning -->
+              <div class="col-12 mb-3">
+                <div class="card shadow-sm" style="border-radius: 12px;">
+                    <div class="card-body text-left p-3">
+                        <img src="{{ url_for('static', filename='images/zoning.jpg') }}" alt="Fire Icon" width="50" height="50" class="mb-2" />
+                        <h5 class="card-title mb-3">Zoning Compliance Details</h5>
+                        <ul class="list-unstyled text-start mb-0">
+                            <li>
+                                <input type="checkbox" id="zoning-business-type">
+                                <label for="zoning-business-type" class="ms-2">Business Type aligns with Zoning laws</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="zoning-property-boundary">
+                                <label for="zoning-property-boundary" class="ms-2">Property Boundaries are respected</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="zoning-Noise-levels">
+                                <label for="zoning-Noise-levels" class="ms-2">Noise Levels within limits</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="zoning-Parking-requirements">
+                                <label for="zoning-Parking-requirements" class="ms-2">Parking Requirements met</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="zoning-Environmental-impact">
+                                <label for="zoning-Environmental-impact" class="ms-2">Environment Impact assesed</label>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+{% endblock %}

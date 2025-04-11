@@ -1,0 +1,268 @@
+{% extends "base.html" %}
+
+{% block title %}Health Self-Assessment{% endblock %}
+
+{% block content %}
+
+<section style="background-color: #f9f9f9;">
+    <div class="container py-4">
+        <div class="row">
+            <!-- Sanitary Facilities Card -->
+            <div class="col-12 mb-3">
+                <div class="card shadow-sm" style="border-radius: 12px; background-color: #fefefe; border: 1px solid #ddd;">
+                    <div class="card-body">
+                        <h5 class="card-title">Sanitary Facilities</h5>
+                        <ul class="list-unstyled">
+                            <li>
+                                <input type="checkbox" id="sanitary-staff">
+                                <label for="sanitary-staff" class="ms-2">Staff latrines</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="sanitary-customer">
+                                <label for="sanitary-customer" class="ms-2">Customer latrines</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="sanitary-shared">
+                                <label for="sanitary-shared" class="ms-2">Shared facilities</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="sanitary-none">
+                                <label for="sanitary-none" class="ms-2">None</label>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cleaning Facilities Card -->
+            <div class="col-12 mb-3">
+                <div class="card shadow-sm" style="border-radius: 12px; background-color: #fefefe; border: 1px solid #ddd;">
+                    <div class="card-body">
+                        <h5 class="card-title">Cleaning Facilities</h5>
+                        <ul class="list-unstyled">
+                            <li>
+                                <input type="checkbox" id="cleaning-sinks">
+                                <label for="cleaning-sinks" class="ms-2">Sinks available</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="cleaning-disinfectants">
+                                <label for="cleaning-disinfectants" class="ms-2">Disinfectants provided</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="cleaning-tools">
+                                <label for="cleaning-tools" class="ms-2">Adequate cleaning tools</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="cleaning-none">
+                                <label for="cleaning-none" class="ms-2">None</label>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Handwashing Stations Card -->
+            <div class="col-12 mb-3">
+                <div class="card shadow-sm" style="border-radius: 12px; background-color: #fefefe; border: 1px solid #ddd;">
+                    <div class="card-body">
+                        <h5 class="card-title">Handwashing Stations</h5>
+                        <ul class="list-unstyled">
+                            <li>
+                                <input type="checkbox" id="handwashing-soap">
+                                <label for="handwashing-soap" class="ms-2">Soap provided</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="handwashing-water">
+                                <label for="handwashing-water" class="ms-2">Running water available</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="handwashing-dry">
+                                <label for="handwashing-dry" class="ms-2">Hand dryers/towels available</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="handwashing-none">
+                                <label for="handwashing-none" class="ms-2">None</label>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Waste Disposal Methods Card -->
+            <div class="col-12 mb-3">
+                <div class="card shadow-sm" style="border-radius: 12px; background-color: #fefefe; border: 1px solid #ddd;">
+                    <div class="card-body">
+                        <h5 class="card-title">Waste Disposal Methods</h5>
+                        <ul class="list-unstyled">
+                            <li>
+                                <input type="checkbox" id="waste-regular-collection">
+                                <label for="waste-regular-collection" class="ms-2">Regular waste collection</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="waste-segregation">
+                                <label for="waste-segregation" class="ms-2">Segregated waste bins</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="waste-bins-lids">
+                                <label for="waste-bins-lids" class="ms-2">Bins with lids</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="waste-none">
+                                <label for="waste-none" class="ms-2">None</label>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Food Handling Protocols Card -->
+            <div class="col-12 mb-3">
+                <div class="card shadow-sm" style="border-radius: 12px; background-color: #fefefe; border: 1px solid #ddd;">
+                    <div class="card-body">
+                        <h5 class="card-title">Food Handling Protocols</h5>
+                        <ul class="list-unstyled">
+                            <li>
+                                <input type="checkbox" id="food-gloves">
+                                <label for="food-gloves" class="ms-2">Staff use gloves</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="food-sealed-containers">
+                                <label for="food-sealed-containers" class="ms-2">Food stored in sealed containers</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="food-expiry-dates">
+                                <label for="food-expiry-dates" class="ms-2">Expiry dates checked</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" id="food-none">
+                                <label for="food-none" class="ms-2">None</label>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Storage Facilities for Food -->
+            <div class="col-12 mb-3">
+              <div class="card shadow-sm" style="border-radius: 12px; background-color: #fefefe; border: 1px solid #ddd;">
+                  <div class="card-body">
+                      <h5 class="card-title">Food Storage  Protocols</h5>
+                      <ul class="list-unstyled">
+                          <li>
+                              <input type="checkbox" id="storage-refrigiration">
+                              <label for="storage-refrigiration" class="ms-2">Fridges maintain Appropriate Temperature</label>
+                          </li>
+                          <li>
+                              <input type="checkbox" id="Storage-drygoods">
+                              <label for="Storage-drygoods" class="ms-2">Dry good stored on shelves </label>
+                          </li>
+                          <li>
+                              <input type="checkbox" id="storage-pallets">
+                              <label for="storage-pallets" class="ms-2">Pallets elevate goods form the floor</label>
+                          </li>
+                          <li>
+                              <input type="checkbox" id="food-none">
+                              <label for="food-none" class="ms-2">None</label>
+                          </li>
+                      </ul>
+                  </div>
+              </div>
+          </div>
+
+           <!-- Food Preparation Card -->
+           <div class="col-12 mb-3">
+            <div class="card shadow-sm" style="border-radius: 12px; background-color: #fefefe; border: 1px solid #ddd;">
+                <div class="card-body">
+                    <h5 class="card-title">Food Preparation</h5>
+                    <ul class="list-unstyled">
+                        <li>
+                            <input type="checkbox" id="prep-clean-surfaces">
+                            <label for="prep-clean-surfaces" class="ms-2">Preparation surfaces are cleaned and sanitized</label>
+                        </li>
+                        <li>
+                            <input type="checkbox" id="prep-cutlery-sanitized">
+                            <label for="prep-cutlery-sanitized" class="ms-2">Cutlery and utensils are sanitized</label>
+                        </li>
+                        <li>
+                            <input type="checkbox" id="prep-cross-contamination">
+                            <label for="prep-cross-contamination" class="ms-2">Cross-contamination prevention methods are followed</label>
+                        </li>
+                        <li>
+                            <input type="checkbox" id="prep-gloves-used">
+                            <label for="prep-gloves-used" class="ms-2">Gloves are used while handling food</label>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 mb-3">
+          <div class="card shadow-sm" style="border-radius: 12px; background-color: #fefefe; border: 1px solid #ddd;">
+              <div class="card-body">
+                  <h5 class="card-title">Types of Food Items Provided</h5>
+                  <ul class="list-unstyled">
+                      <li>
+                          <input type="checkbox" id="food-bakery">
+                          <label for="food-bakery" class="ms-2">Bakery Products (e.g., bread, pastries)</label>
+                      </li>
+                      <li>
+                          <input type="checkbox" id="food-dairy">
+                          <label for="food-dairy" class="ms-2">Dairy Products (e.g., milk, cheese)</label>
+                      </li>
+                      <li>
+                          <input type="checkbox" id="food-meat">
+                          <label for="food-meat" class="ms-2">Meat and Poultry</label>
+                      </li>
+                      <li>
+                          <input type="checkbox" id="food-seafood">
+                          <label for="food-seafood" class="ms-2">Seafood</label>
+                      </li>
+                      <li>
+                          <input type="checkbox" id="food-produce">
+                          <label for="food-produce" class="ms-2">Fresh Produce (e.g., fruits, vegetables)</label>
+                      </li>
+                      <li>
+                          <input type="checkbox" id="food-packaged">
+                          <label for="food-packaged" class="ms-2">Packaged Foods (e.g., canned goods, snacks)</label>
+                      </li>
+                      <li>
+                          <input type="checkbox" id="food-beverages">
+                          <label for="food-beverages" class="ms-2">Beverages (e.g., juices, soft drinks)</label>
+                      </li>
+                      <li>
+                          <input type="checkbox" id="food-confectionery">
+                          <label for="food-confectionery" class="ms-2">Confectionery (e.g., sweets, chocolates)</label>
+                      </li>
+                      <li>
+                          <input type="checkbox" id="food-other">
+                          <label for="food-other" class="ms-2">Other (please specify below)</label>
+                          <input type="text" class="form-control mt-2" placeholder="Specify other food items" />
+                      </li>
+                  </ul>
+              </div>
+          </div>
+              
+            <!-- Number of Persons Employed Card -->
+            <div class="col-12 mb-3">
+              <div class="card shadow-sm" style="border-radius: 12px; background-color: #fefefe; border: 1px solid #ddd;">
+                  <div class="card-body">
+                      <h5 class="card-title">Number of Persons Employed</h5>
+                      <form>
+                          <div class="mb-3">
+                              <label for="men-employed" class="form-label">Number of Men</label>
+                              <input type="number" id="men-employed" class="form-control" placeholder="Enter number of men employed" min="0" />
+                          </div>
+                          <div class="mb-3">
+                              <label for="women-employed" class="form-label">Number of Women</label>
+                              <input type="number" id="women-employed" class="form-control" placeholder="Enter number of women employed" min="0" />
+                          </div>
+                      </form>
+                  </div>
+              </div>
+          </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

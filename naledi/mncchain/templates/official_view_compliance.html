@@ -1,0 +1,54 @@
+{% extends "officialbase.html" %}
+
+{% block title %}View Compliance Record{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h3 class="text-center">Compliance Record for {{ store.store_name }} (ID: {{ store.store_id }})</h3>
+
+    <table class="table table-bordered">
+        <tr>
+            <th>Sanitary Facilities</th>
+            <td>{{ compliance_record.sanitary_facilities['status'] }}</td>
+        </tr>
+        <tr>
+            <th>Cleaning Facilities</th>
+            <td>{{ compliance_record.cleaning_facilities['status'] }}</td>
+        </tr>
+        <tr>
+            <th>Handwashing Stations</th>
+            <td>{{ compliance_record.handwashing_stations['status'] }}</td>
+        </tr>
+        <tr>
+            <th>Food Handling</th>
+            <td>{{ compliance_record.food_handling['status'] }}</td>
+        </tr>
+        <tr>
+            <th>Food Storage</th>
+            <td>{{ compliance_record.food_storage['status'] }}</td>
+        </tr>
+        <tr>
+            <th>Waste Disposal</th>
+            <td>{{ compliance_record.waste_disposal['status'] }}</td>
+        </tr>
+        <tr>
+            <th>Food Preparation</th>
+            <td>{{ compliance_record.food_preparation['status'] }}</td>
+        </tr>
+        <tr>
+            <th>Employees</th>
+            <td>{{ compliance_record.employees['total'] }} total employees</td>
+        </tr>
+    </table>
+
+    <!-- ✅ Update Compliance Button -->
+    <div class="text-center mt-4">
+        <a href="{{ url_for('mncview.official_health_review', store_id=store.store_id) }}" class="btn btn-warning">
+            ✍️ Update Compliance
+        </a>
+        <a href="{{ url_for('mncview.official_store_dashboard') }}" class="btn btn-secondary">
+            🔙 Back to Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}

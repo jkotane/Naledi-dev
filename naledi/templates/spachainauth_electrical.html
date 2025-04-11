@@ -1,0 +1,46 @@
+{% extends "naledibase.html" %}
+
+{% block title %}Health Self-Assessment{% endblock %}
+
+{% block content %}
+
+<section style="background-color: #f9f9f9;">
+    <div class="container py-4">
+        <div class="row">
+              <!-- Zoning -->
+              <!-- Electrical  -->
+           <div class="col-12 mb-3">
+            <div class="card shadow-sm" style="border-radius: 12px;">
+                <div class="card-body text-left p-3">
+                    <img src="{{ url_for('static', filename='images/electrical.jpg') }}" alt="Fire Icon" width="50" height="50" class="mb-2" />
+                    <h5 class="card-title mb-3">Electrical  Compliance Details</h5>
+                    <ul class="list-unstyled text-start mb-0">
+                        <li>
+                            <input type="checkbox" id="electrical-wiring">
+                            <label for="electrical-wiring" class="ms-2">Electrical wiring up to code</label>
+                        </li>
+                        <li>
+                            <input type="checkbox" id="electrical-Grounding-system">
+                            <label for="electrical-Grounding-system" class="ms-2">Grounding system installed</label>
+                        </li>
+                        <li>
+                            <input type="checkbox" id="electrical-overload-protection">
+                            <label for="electrical-overload-protection" class="ms-2">Overload Protection In place</label>
+                        </li>
+                        <li>
+                            <input type="checkbox" id="electrical-swtiches-outlets">
+                            <label for="electrical-swtiches-outlets" class="ms-2">All switches and outlets functional </label>
+                        </li>
+                        <li>
+                            <input type="checkbox" id="electrical-backup-power">
+                            <label for="electrical-backup-power" class="ms-2">Back-up power generation Inspected</label>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+{% endblock %}

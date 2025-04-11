@@ -1,0 +1,145 @@
+{% extends "officialbase.html" %}
+
+{% block title %}Complete Your Registration{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h3 class="text-center">Complete Your Registration</h3>
+
+  <!-- Flash Messages -->
+  {% with messages = get_flashed_messages(with_categories=True) %}
+  {% if messages %}
+  <div class="form-group col-md-6 mx-auto">
+      {% for category, message in messages %}
+      <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      {% endfor %}
+  </div>
+  {% endif %}
+  {% endwith %}
+
+  <form method="POST" action="{{ url_for('naledi.complete_registration', token=token) }}">
+    <!-- Email (Readonly) -->
+    <div class="form-group col-md-6 mx-auto">
+      <label for="email">Email (Official)</label>
+      <input
+        type="email"
+        class="form-control"
+        id="email"
+        name="email"
+        value="{{ user.mnc_email }}"
+        readonly
+      />
+    </div>
+
+    <!-- First & Last Name (Readonly) -->
+    <div class="form-group col-md-6 mx-auto">
+      <label for="mnc_fname">First Name</label>
+      <input
+        type="text"
+        class="form-control"
+        id="mnc_fname"
+        name="mnc_fname"
+        value="{{ user.mnc_fname }}"
+        readonly
+      />
+    </div>
+
+    <div class="form-group col-md-6 mx-auto">
+      <label for="mnc_lname">Last Name</label>
+      <input
+        type="text"
+        class="form-control"
+        id="mnc_lname"
+        name="mnc_lname"
+        value="{{ user.mnc_lname }}"
+        readonly
+      />
+    </div>
+
+    <!-- Municipality -->
+    <div class="form-group col-md-6 mx-auto">
+      <label for="municipality">Municipality</label>
+      <input
+        type="text"
+        class="form-control"
+        id="municipality"
+        name="municipality"
+        value="{{ user.municipality or '' }}"
+        required
+      />
+    </div>
+
+    <!-- Department -->
+    <div class="form-group col-md-6 mx-auto">
+      <label for="department">Department</label>
+      <input
+        type="text"
+        class="form-control"
+        id="department"
+        name="department"
+        value="{{ user.department or '' }}"
+        required
+      />
+    </div>
+
+    <!-- Job Title -->
+    <div class="form-group col-md-6 mx-auto">
+      <label for="job_title">Job Title</label>
+      <input
+        type="text"
+        class="form-control"
+        id="job_title"
+        name="job_title"
+        value="{{ user.mnc_title or '' }}"
+        required
+      />
+    </div>
+
+    <!-- Contact Number -->
+    <div class="form-group col-md-6 mx-auto">
+      <label for="contact">Contact Number</label>
+      <input
+        type="text"
+        class="form-control"
+        id="contact"
+        name="contact"
+        value="{{ user.mnc_contact or '' }}"
+        required
+      />
+    </div>
+
+    <!-- New Password -->
+    <div class="form-group col-md-6 mx-auto">
+      <label for="password">New Password</label>
+      <input
+        type="password"
+        class="form-control"
+        id="password"
+        name="password"
+        placeholder="Enter new password"
+        required
+      />
+    </div>
+
+    <!-- Confirm Password -->
+    <div class="form-group col-md-6 mx-auto">
+      <label for="confirm_password">Confirm Password</label>
+      <input
+        type="password"
+        class="form-control"
+        id="confirm_password"
+        name="confirm_password"
+        placeholder="Confirm new password"
+        required
+      />
+    </div>
+
+    <div class="form-group col-md-6 mx-auto text-left">
+      <button type="submit" class="btn btn-primary btn-lg btn-sm mt-4">Complete Registration</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

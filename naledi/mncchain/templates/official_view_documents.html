@@ -1,0 +1,54 @@
+{% extends "officialbase.html" %}
+
+{% block title %}Official Document Review{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center">Review Uploaded Documents</h2>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Document Name</th>
+                <th>Uploader</th>
+                <th>Status</th>
+                <th>Uploaded Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for document in documents %}
+            <tr>
+                <td>{{ document.doc_name }}</td>
+                <td>{{ document.user.username }}</td>
+                <td>
+                    {% if document.status == "approved" %}
+                        <span class="badge bg-success">✅ Approved</span>
+                    {% elif document.status == "rejected" %}
+                        <span class="badge bg-danger">❌ Rejected</span>
+                    {% else %}
+                        <span class="badge bg-warning">🟡 Pending</span>
+                    {% endif %}
+                </td>
+                <td>{{ document.uploaded_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td>
+                    <!-- View Document (Opens in a new tab) -->
+                    <a href="{{ document.file_url }}" target="_blank" class="btn btn-info">📄 View</a>
+
+                    {% if document.status == "pending" %}
+                    <!-- Approve / Reject Form -->
+                    <form method="POST" style="display:inline;">
+                        <input type="hidden" name="doc_id" value="{{ document.id }}">
+                        <button type="submit" name="action" value="approve" class="btn btn-success">✅ Approve</button>
+                        <button type="submit" name="action" value="reject" class="btn btn-danger">❌ Reject</button>
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+

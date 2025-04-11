@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+        rel="stylesheet"
+        href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+        crossorigin="anonymous"
+    />
+    <link
+        rel="stylesheet"
+        href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+        crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- Link to external CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/progress.css') }}">
+
+
+    <title>{% block title %}Home{% endblock %}</title>
+    <style>
+        .landing-text {
+            text-align: center;
+            margin-top: 50px;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color:#343a40; /* Darker text for better contrast */
+        }
+        .landing-graphic {
+            text-align: center;
+            margin-top: 40px;     /* was originally 50px */
+        }
+        .landing-graphic img {
+            max-width: 60%;
+            height: auto;
+            border-radius: 8px; /* Add rounded corners for a modern look */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);   /* Subtle shadow for aesthetics */
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <div class="container">
+            <!-- Logo/Graphic on the left -->
+            <a class="navbar-brand" href="/">
+                <img src="{{ url_for('static', filename='images/spazachain.png') }}" alt="Logo" width="50" height="50" />
+                Spazanet
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbar">
+                <div class="navbar-nav ms-auto">
+                
+                    {% if current_user.is_authenticated %}
+                        <!-- Check the user's type: spaza_user or mnc_user -->
+                      
+                        <!-- Menu for Spaza users -->
+                        <a class="nav-item nav-link" href="{{ url_for('naledi.naledi_home') }}">Home</a>
+                        <a class="nav-item nav-link" href="{{ url_for('naledi.naledi_services') }}">Services</a>
+                        <a class="nav-item nav-link" href="{{ url_for('spachainauth.spachainauth_register') }}">Register</a>
+                        <a class="nav-item nav-link" href="{{ url_for('spachainauth.spachainauth_store') }}">Store</a>
+                        
+                        <!-- Conditional Compliance Dropdown Menu -->
+                        {% if store and (store.reg_status == 'registered' or store.reg_status=='draft') %}
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="complianceDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Compliance
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="complianceDropdown">  
+                                    <a class="dropdown-item" href="{{ url_for('spachainauth.spachainauth_food_items') }}">Food List</a>
+                                    <a class="dropdown-item" href="{{ url_for('spachainauth.spachainauth_health_self_check') }}">Health</a>
+                                    <a class="dropdown-item" href="{{ url_for('spachainauth.spachainauth_fire') }}">Fire</a>
+                                    <a class="dropdown-item" href="{{ url_for('spachainauth.spachainauth_zoning') }}">Zoning</a>
+                                    <a class="dropdown-item" href="{{ url_for('spachainauth.spachainauth_electrical') }}">Electrical</a>
+                                    <a class="dropdown-item" href="{{ url_for('spachainauth.spachainauth_building') }}">Building Plans</a>
+                                </div>
+                            </li>
+                        {% endif %}
+                        
+                        <a class="nav-item nav-link" href="{{ url_for('naledi.naledi_logout') }}">Logout</a>
+        
+                    {% else %}
+                        <!-- If the user is not logged in -->
+                        <!--<a class="nav-item nav-link" href="{{ url_for('naledi.naledi_login') }}">Login</a> -->
+                        <a class="nav-item nav-link" href="{{ url_for('naledi.naledi_login') }}">Login</a>
+                        <a class="nav-item nav-link" href="{{ url_for('naledi.naledi_services') }}">Services</a>
+                        <a class="nav-item nav-link" href="{{ url_for('naledi.naledi_sign_up') }}">Sign Up</a>
+                    {% endif %}
+                
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+     <!-- Progress Bar for Registration Status -->
+<!-- Progress Bar for Registration Status -->
+<div class="container mt-4">
+    <h3 class="text-center">Registration Progress</h3>
+    <div class="progress-bar-container">
+        <!-- Milestone 1: User Profile -->
+        <div class="progress-circle" id="milestone-1">
+            <span>1</span>
+        </div>
+
+        <!-- Line Connecting Milestone 1 to 2 -->
+        <div class="progress-line"></div>
+
+        <!-- Milestone 2: Registration -->
+        <div class="progress-circle" id="milestone-2">
+            <span>2</span>
+        </div>
+
+        <!-- Line Connecting Milestone 2 to 3 -->
+        <div class="progress-line"></div>
+
+        <!-- Milestone 3: Store Registration -->
+        <div class="progress-circle" id="milestone-3">
+            <span>3</span>
+        </div>
+
+        <!-- Line Connecting Milestone 3 to 4 -->
+        <div class="progress-line"></div>
+
+        <!-- Milestone 4: Document Upload -->
+        <div class="progress-circle" id="milestone-4">
+            <span>4</span>
+        </div>
+    </div>
+</div>
+ <!-- Link to external JS -->
+ <script src="{{ url_for('static', filename='js/progress.js') }}"></script>
+
+
+
+    <!-- Flash Messages -->
+    <div class="container mt-3">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div>
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+            </div>
+        {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Scripts -->
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+</body>
+</html>

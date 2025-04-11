@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="row align-items-center">
+    <!-- Graphic Section -->
+    <div class="col-md-6 text-center">
+      <img
+        src="{{ url_for('static', filename='images/kidsstorefront.jpg') }}"
+        alt="Default Landing Graphic"
+        class="img-fluid rounded"
+        width="350"
+        height="350"
+      />
+    </div>
+    <!-- Login Box -->
+    <div class="col-md-6">
+      <div class="login-box p-4 shadow rounded">
+        <h3 class="mb-4 text-center">Hello, Welcome Back</h3>
+        <form method="POST" action="{{ url_for('spachainauth.login') }}">
+          <div class="mb-3">
+            <input
+              type="email"
+              class="form-control"
+              name="email"
+              placeholder="Email or Username"
+              required
+            />
+          </div>
+          <div class="mb-3">
+            <input
+              type="password"
+              class="form-control"
+              name="password"
+              placeholder="Password"
+              required
+            />
+          </div>
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+              <input type="checkbox" name="remember" /> Remember me
+            </div>
+            <a href="#" class="text-decoration-none">Forgot Password?</a>
+          </div>
+          <button type="submit" class="btn btn-primary btn-lg w-100">Login</button>
+        </form>
+        <hr class="my-4" />
+        <p>or login with</p>
+        <a
+          href="{{ url_for('spachainauth.google_auth') }}"
+          class="btn btn-google btn-lg w-100"
+        >
+          <i class="fab fa-google"></i> Sign in with Google
+        </a>
+        <p class="mt-3">
+          New user?
+          <a href="{{ url_for('spachainauth.google_auth') }}" class="text-decoration-none"
+            >Sign Up Here</a
+          >
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

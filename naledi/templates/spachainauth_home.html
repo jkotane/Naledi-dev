@@ -1,0 +1,88 @@
+{% extends "naledibase.html" %}
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+
+<section style="background-color: #eee;">
+  <h2 class="mb-4"> Welcome, {{ user.username }}</h2>
+
+  <div class="row">
+    <div class="col-lg-4">
+      <div class="card shadow-sm">
+        <div class="card-body text-center">
+          <h5 class="my-3">{{ store.store_name or "Unnamed Store" }}</h5>
+          <p class="text-muted mb-1">{{ store.district_mnc or "No Location Provided" }}</p>
+         <!-- <a href="{{ url_for('spachainauth.update_profile') }}" class="btn btn-outline-primary mt-2">Update Profile</a> -->
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-8">
+      <div class="row">
+        <div class="col-md-6 mb-4">
+          <div class="card shadow-sm h-100">
+            <div class="card-body">
+              <h6 class="text-primary mb-3">Verification Status</h6>
+
+              {% for label, value in {
+                'Owner Identity': progress.registration_status,
+                'Tax Clearance': progress.tax_clearance_status,
+                'CIPC': progress.cipc_status,
+                'Police Clearance': progress.police_clearance_status,
+                'Lease Agreement': progress.lease_agreement_status
+              }.items() %}
+                <p class="mb-1">{{ label }}</p>
+                <div class="progress mb-3" style="height: 6px;">
+                  <div class="progress-bar
+                    {% if value == 'Complete' %}bg-success
+                    {% elif value == 'Draft' %}bg-warning
+                    {% else %}bg-danger{% endif %}"
+                    role="progressbar"
+                    style="width: {% if value == 'Complete' %}100{% elif value == 'Draft' %}50{% else %}10{% endif %}%;">
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+          <div class="card shadow-sm h-100">
+            <div class="card-body">
+              <h6 class="text-primary mb-3">Municipal Compliance</h6>
+
+              {% for label, status in {
+                'Health Certification': progress.health_status,
+                'Fire Inspection': progress.fire_status,
+                'Zoning': progress.zoning_status,
+                'Electrical': progress.electrical_status,
+                'Building Plans': progress.building_status
+              }.items() %}
+                <p class="mb-1">{{ label }}</p>
+                <div class="progress mb-3" style="height: 6px;">
+                  <div class="progress-bar
+                    {% if status == 'Complete' %}bg-success
+                    {% elif status == 'Draft' %}bg-warning
+                    {% else %}bg-danger{% endif %}"
+                    role="progressbar"
+                    style="width: {% if status == 'Complete' %}100{% elif status == 'Draft' %}50{% else %}10{% endif %}%;">
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </section>
+  <script>
+    var milestones = [
+      { id: 1, status: "{{ progress.profile_complete }}" },
+      { id: 2, status: "{{ progress.registration_complete }}" },
+      { id: 3, status: "{{ progress.store_details_complete }}" },
+      { id: 4, status: "{{ progress.documents_uploaded }}" }
+    ];
+  </script>
+  <script src="{{ url_for('static', filename='js/progress.js') }}"></script>
+  {% endblock %}

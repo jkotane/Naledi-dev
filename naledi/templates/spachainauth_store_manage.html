@@ -1,0 +1,94 @@
+{% extends "naledibase.html" %}
+
+{% block title %}Store Details{% endblock %}
+
+{% block content %}
+<section style="background-color: #eee;">
+  <div class="container py-5">
+    <div class="row">
+      <!-- Left: Existing Stores -->
+      <div class="col-lg-6">
+        <div class="card mb-4">
+          <div class="card-header bg-primary text-white">
+            <h5>Your Registered Stores</h5>
+          </div>
+          <div class="card-body">
+            {% if existing_stores %}
+              {% for store in existing_stores %}
+                <p><strong>{{ store.store_name }}</strong><br>
+                {{ store.storeaddress }}, {{ store.city }}, {{ store.province }}<br>
+                <strong>Municipality:</strong> {{ store.district_mnc }}<br>
+                <strong>Store ID:</strong> {{ store.id }}</p>
+                <hr>
+              {% endfor %}
+            {% else %}
+              <p class="text-muted">You have not registered any store yet.</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Register New Store -->
+      <div class="col-lg-6">
+        <div class="card mb-4">
+          <div class="card-header bg-success text-white">
+            <h5>{% if existing_stores %}Add Another Store{% else %}Register Your Store{% endif %}</h5>
+          </div>
+          <div class="card-body">
+            <form method="POST" action="{{ url_for('spachainauth.spachainauth_store') }}">
+              {{ form.hidden_tag() if form else "" }}
+
+              <div class="mb-3">
+                <label for="store_name" class="form-label">Store Name</label>
+                <input type="text" class="form-control" id="store_name" name="store_name" required>
+              </div>
+              <div class="mb-3">
+                <label for="storetype" class="form-label">Store Type</label>
+                <select id="storetype" name="storetype" class="form-control" required>
+                  <option disabled selected>Select Store Type</option>
+                  <option value="Tuck Shop">Tuck Shop</option>
+                  <option value="Butcher">Butcher</option>
+                  <option value="FruitVeg">Fruit & Veg</option>
+                  <option value="HardWare">HardWare</option>
+                  <option value="Gcwalisa">Gcwalisa</option>
+                  <option value="FoodTruck">FoodTruck</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="storeaddress" class="form-label">Address</label>
+                <input type="text" class="form-control" id="storeaddress" name="storeaddress" required>
+              </div>
+              <div class="mb-3">
+                <label for="city" class="form-label">City</label>
+                <input type="text" class="form-control" id="city" name="city" required>
+              </div>
+              <div class="mb-3">
+                <label for="province" class="form-label">Province</label>
+                <select id="province" name="province" class="form-control" required>
+                  <option disabled selected>Select Province</option>
+                  <option value="Eastern Cape">Eastern Cape</option>
+                  <option value="Free State">Free State</option>
+                  <option value="Gauteng">Gauteng</option>
+                  <option value="KwaZulu-Natal">KwaZulu-Natal</option>
+                  <option value="Limpopo">Limpopo</option>
+                  <option value="Mpumalanga">Mpumalanga</option>
+                  <option value="Northern Cape">Northern Cape</option>
+                  <option value="North West">North West</option>
+                  <option value="Western Cape">Western Cape</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="municipality" class="form-label">Municipality</label>
+                <input type="text" class="form-control" id="municipality" name="municipality" required>
+              </div>
+              <div class="text-end">
+                <button type="submit" class="btn btn-success">Submit Store</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

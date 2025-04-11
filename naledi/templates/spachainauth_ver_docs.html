@@ -1,0 +1,66 @@
+{% extends "naledibase.html" %}
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+
+<style>
+    .card {
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .card-title {
+        font-weight: bold;
+    }
+    
+    .list-group-item {
+        font-size: 0.95rem;
+    }
+    
+    .text-danger {
+        font-weight: bold;
+    }
+</style>
+
+
+<section style="background-color: #eee;">
+    <div class="row">
+        <!-- Submitted Documents Card -->
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">Submitted Documents</h5>
+                    <ul class="list-group">
+                        {% if submitted_docs %}
+                            {% for key, value in submitted_docs.items() %}
+                                <li class="list-group-item">{{ value }}</li>
+                            {% endfor %}
+                        {% else %}
+                            <li class="list-group-item text-muted">No documents submitted yet.</li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Missing Documents Card -->
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title text-danger">Missing Documents</h5>
+                    <ul class="list-group">
+                        {% if missing_docs %}
+                            {% for key, value in missing_docs.items() %}
+                                <li class="list-group-item text-danger">{{ value }}</li>
+                            {% endfor %}
+                        {% else %}
+                            <li class="list-group-item text-success">All required documents have been submitted.</li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>    
+  </section>
+
+  {% endblock %}

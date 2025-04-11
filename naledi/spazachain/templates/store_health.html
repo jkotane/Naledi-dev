@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Health Self-Assessment{% endblock %}
+
+{% block content %}
+ 
+
+
+<form method="POST" action="{{ url_for('spachainauth.store_health') }}">
+   <!-- Health Self-Assessment -->
+    <h5>Sanitary Facilities</h5>
+    <label><input type="checkbox" name="sanitary_facilities" value="staff_latrines"> Staff latrines</label><br>
+    <label><input type="checkbox" name="sanitary_facilities" value="customer_latrines"> Customer latrines</label><br>
+    <label><input type="checkbox" name="sanitary_facilities" value="no_latrines"> No latrines </label><br>
+
+    <!-- Cleaning Facilities -->
+    <h5>Cleaning Facilities</h5>
+    <label><input type="checkbox" name="cleaning_facilities" value="sinks_available"> Sinks available</label><br>
+    <label><input type="checkbox" name="cleaning_facilities" value="disinfectants"> Disinfectants provided</label><br>
+    <label><input type="checkbox" name="cleaning_facilities" value="cleaning_tools"> Cleang tools available</label><br>
+
+     <!-- Handwashing Stations -->
+    <h5>Hand Washing Stations</h5>
+    <label><input type="checkbox" name="handwashing_facilities" value="handwashing_soap"> Soap provided </label><br>
+    <label><input type="checkbox" name="handwashing_facilities" value="handwashing_water"> Running water available</label><br>
+    <label><input type="checkbox" name="handwshing_facilities" value="handwashing_dryers"> Clean towels available </label><br>
+
+    <!-- Waste Disposal Methods -->
+    <h5>Waste Disposal Methods</h5>
+    <label><input type="checkbox" name="waster_disposal" value="waste_regular_collection"> Regular waste collection </label><br>
+    <label><input type="checkbox" name="waster_disposal" value="waste_segregation"> Segregated waste bins</label><br>
+    <label><input type="checkbox" name="waster_disposal" value="waste_binlids"> Bins with lids </label><br>
+
+
+    <!-- Food Handling Protocols -->
+
+    <h5>Food Handling Protocols</h5>
+    <label><input type="checkbox" name="food_handling" value="food_handling_training"> Staff trained in food handling</label><br>
+    <label><input type="checkbox" name="food_handling" value="food_handling_gloves"> Staff use gloves</label><br>
+    <label><input type="checkbox" name="food_handling" value="food_handling_containers"> Food stored in sealed containers</label><br>
+    <label><input type="checkbox" name="food_handling" value="food_handling_expiry"> Food expiry dates checked daily</label><br>
+
+    <!-- Food storage Facilities  -->
+
+    <h5>Food Storage facilities</h5>
+    <label><input type="checkbox" name="food_storage" value="food_storage_refrigiration"> Appropriate Fridge(s) temperatures maintained</label><br>
+    <label><input type="checkbox" name="food_storage" value="food_storage_drygoods">Dry good stored on shelves</label><br>
+    <label><input type="checkbox" name="food_storage" value="food_storage_pallets"> Pallets elevate goods from ground</label><br>
+
+
+    <!-- Food Preparation Protocols-->
+    <h5>Food Preparation Protocols</h5>
+    <label><input type="checkbox" name="food_preparation" value="food_preparation_clean"> Food preparation area clean</label><br>   
+    <label><input type="checkbox" name="food_preparation" value="food_preparation_gloves"> Staff use gloves</label><br>
+    <label><input type="checkbox" name="food_preparation" value="food_preparation_hairnets"> Staff wear hairnets</label><br>
+    <label><input type="checkbox" name="food_preparation" value="food_preparation_aprons"> Staff wear aprons</label><br>    
+
+
+    <!-- Food Preparation Tools-->
+    <h5>Food Preparation Tools</h5>
+    <label><input type="checkbox" name="food_tools" value="food_tools_clean_surfaces"> Sanitzed and clean surfaces</label><br>
+    <label><input type="checkbox" name="food_tools" value="food_tools_cutlery"> Sanitized utentlis and cutlery</label><br>
+    <label><input type="checkbox" name="food_tools" value="food_tools_prevention"> Cross contamination prevention methods exist</label><br>
+   
+    <!-- Number of Employees -->
+    <h5>Number of Employees</h5>
+    <label for="men-employed">Men:</label>
+    <input type="number" id="men-employed" name="men-employed" min="0"><br>
+    <label for="women-employed">Women:</label>
+    <input type="number" id="women-employed" name="women-employed" min="0"><br>
+    <label for="total-employed">Total:</label>
+    <input type="number" id="total-employed" name="total-employed" min="0"><br>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+{% endblock %}

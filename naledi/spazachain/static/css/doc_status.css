@@ -1,0 +1,16 @@
+.card {
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card-title {
+    font-weight: bold;
+}
+
+.list-group-item {
+    font-size: 0.95rem;
+}
+
+.text-danger {
+    font-weight: bold;
+}

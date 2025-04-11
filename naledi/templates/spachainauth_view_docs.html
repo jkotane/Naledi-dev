@@ -1,0 +1,45 @@
+{% extends "naledibase.html" %}
+
+{% block title %}View & Update Documents{% endblock %}
+
+{% block content %}
+<section class="container py-4">
+    <h3>📁 Uploaded Documents</h3>
+
+    {% if existing_docs %}
+    <div class="alert alert-success">
+        ✅ You have uploaded the following documents:
+    </div>
+
+    <table class="table table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th>Document Type</th>
+                <th>Current File</th>
+                <th>Update</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for doc_type, doc in existing_docs.items() %}
+            <tr>
+                <td>{{ doc_type }}</td>
+                <td><a href="{{ doc.file_url }}" target="_blank" class="btn btn-sm btn-success">View</a></td>
+                <td>
+                    <form method="POST" enctype="multipart/form-data">
+                        <input type="file" class="form-control-file" name="{{ doc_type }}" accept="image/*,.pdf">
+                        <button type="submit" class="btn btn-primary btn-sm mt-2">Update</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="alert alert-warning">
+        ❌ No documents uploaded yet.
+    </div>
+    {% endif %}
+
+    <a href="{{ url_for('spachainauth.spachainauth_upload_docs') }}" class="btn btn-secondary mt-3">Upload Missing Documents</a>
+</section>
+{% endblock %}
