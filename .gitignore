@@ -1,0 +1,22 @@
+# Git ignore file for the project
+env/
+env/.env.preprod.store
+env/.env.preprod.official
+env/.env.preprod.admin
+
+
+# Bytecode and Cache
+__pycache__/
+*.py[cod]
+
+# Logs and Databases
+*.log
+db.sqlite3
+
+# IDE and Editor Files
+.vscode/
+.idea/
+config.py
+config.py
+.DS_Store
+.env
