@@ -151,7 +151,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
         <div class="container">
             <a class="navbar-brand" href="/">
-                <img src="{{ url_for('spachainauth.static', filename='images/spazachain.png') }}" alt="Logo" width="50" height="50" />
+                <img src="{{ url_for('static', filename='images/spazachain.png') }}" alt="Logo" width="50" height="50" />
                 Spazanet
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar">
@@ -162,9 +162,8 @@
                     {% if current_user.is_authenticated %}
                         <!-- Menu for Spaza users -->
                         <a class="nav-item nav-link" href="{{ url_for('spachainauth.spachainauth_home') }}">Home</a>
+                        <a class="nav-item nav-link" href="{{ url_for('spachainauth.spachainauth_owner_details') }}">Owner </a>       
                         <a class="nav-item nav-link" href="{{ url_for('spachainauth.spachainauth_register') }}">Register</a>
-                        
-                     
                         <a class="nav-item nav-link" href="{{ url_for('spachainauth.spachainauth_store') }}">Store</a>
                            <!-- <a class="nav-item nav-link" href="{{ url_for('spachainauth.spachainauth_store_manage') }}">Store manage </a>  -->    
                         <a class="nav-item nav-link" href="{{ url_for('spachainauth.spachainauth_upload_docs') }}">Documents</a>

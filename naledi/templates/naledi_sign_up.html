@@ -32,6 +32,7 @@
 
   <!-- Traditional Sign-Up Form -->
   <form method="POST" action="{{ url_for('naledi.naledi_sign_up') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     {{ form.hidden_tag() if form else "" }}
 
     <div class="form-row">

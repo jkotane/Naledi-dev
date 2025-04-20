@@ -25,11 +25,11 @@
               <h6 class="text-primary mb-3">Verification Status</h6>
 
               {% for label, value in {
-                'Owner Identity': progress.registration_status,
-                'Tax Clearance': progress.tax_clearance_status,
-                'CIPC': progress.cipc_status,
-                'Police Clearance': progress.police_clearance_status,
-                'Lease Agreement': progress.lease_agreement_status
+                'Owner Identity': verifications.owner_verified_id,
+                'Lesee Identity': verifications.lessee_verified_id,
+                'Business Registration': verifications.company_registration,
+                'Tax Clearance': verifications.tax_clearance,
+                'Police Clearance': verifications.police_clearanc,
               }.items() %}
                 <p class="mb-1">{{ label }}</p>
                 <div class="progress mb-3" style="height: 6px;">
@@ -52,11 +52,11 @@
               <h6 class="text-primary mb-3">Municipal Compliance</h6>
 
               {% for label, status in {
-                'Health Certification': progress.health_status,
-                'Fire Inspection': progress.fire_status,
-                'Zoning': progress.zoning_status,
-                'Electrical': progress.electrical_status,
-                'Building Plans': progress.building_status
+                'Health Certification': compliance_status.verified_coa,
+                'Fire Inspection': compliance_status.verified_fire_insp,
+                'Zoning': compliance_status.verified_zoning_cert,
+                'Electrical': compliance_status.verified_elec_cer,
+                'Building Plans':compliance_status.verified_building_cert
               }.items() %}
                 <p class="mb-1">{{ label }}</p>
                 <div class="progress mb-3" style="height: 6px;">

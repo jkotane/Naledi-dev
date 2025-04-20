@@ -10,7 +10,7 @@ from flask import Blueprint, render_template, request, flash, redirect, url_for,
 from flask_login import login_required, current_user
 from core.naledimodels import db, MncUser, MncDepartment, StoreDetails, Municipal,  HealthCompliance, UserProfile, SpazaOwner,Document
 from functools import wraps
-from core.oauth import exchange_id_token_for_access_token, get_storage_client
+from core.utils import  get_storage_client
 from core.utils import fetch_data, generate_dashboard_layout, allowed_file, upload_to_gcs , generate_signed_url,get_access_token, generate_temporary_download_url
 import dash
 import dash_bootstrap_components as dbc
@@ -22,6 +22,7 @@ import requests
 from google.oauth2.credentials import Credentials
 from google.auth.transport.requests import Request
 from sqlalchemy import select
+from core import  official_login_manager
 
 
 

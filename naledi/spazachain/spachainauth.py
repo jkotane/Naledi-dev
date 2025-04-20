@@ -3,7 +3,7 @@ from flask import Blueprint, render_template, request, flash, redirect, url_for,
 from flask_login import login_user, logout_user, login_required, current_user, LoginManager
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
-from core.naledimodels import UserProfile, SpazaOwner, StoreDetails, RegistrationForm, RegistrationProgress, Lesee, FoodItems,HealthCompliance,Document, UserProfileForm
+from core.naledimodels import UserProfile, SpazaOwner, StoreDetails, RegistrationForm, RegistrationProgress, Lesee, FoodItems,HealthCompliance,Document, UserProfileForm, IdentityVerification, MunicipalCompliance
 from datetime import datetime
 from core import oauth
 from core import db, os
@@ -48,14 +48,16 @@ def inject_progress():
 @spachainauth.before_request
 def before_request():
    if current_user.is_authenticated:
-       g.user_id = current_user.id
+       g.user_id = current_user.user_id
    else:    
        g.user_id = None
         
 
 # define the function to get the registration status
 
-def get_registration_progress(user_id):
+#reg_form = RegistrationForm.query.filter_by(owner_id=spaza_owner.owner_id).first()
+
+def get_registration_progress(user_profile_id):
     progress = {
         "profile_complete": "not-started",
         "registration_complete": "not-started",
@@ -63,36 +65,51 @@ def get_registration_progress(user_id):
         "documents_uploaded": "not-started",
     }
 
-    # Check profile
-    user_profile = UserProfile.query.filter_by(id=user_id).first()
+    # ✅ Check profile existence
+    user_profile = UserProfile.query.filter_by(user_profile_id=user_profile_id).first()
     if user_profile:
         progress["profile_complete"] = "completed"
 
-    # Registration form
-    reg_form = RegistrationForm.query.filter_by(user_id=user_id).first()
+    # ✅ Registration form (linked to user_profile_id now)
+    reg_form = RegistrationForm.query.filter_by(user_id=user_profile_id).first()
     if reg_form:
-        progress["registration_complete"] = "completed"
 
-    # Store details
-    store_details = StoreDetails.query.filter_by(owner_id=user_id).first()
-    if store_details:
-        reg_status = store_details.reg_status
-        if reg_status == 'registered':
-            progress["store_details_complete"] = "completed"
-        elif reg_status in ['draft', 'submitted']:
-            progress["store_details_complete"] = "started"
+        if reg_form.status == "submitted":
+            progress["registration_complete"] = "started"
+        elif reg_form.status == "registered":
+            progress["registration_complete"] = "completed"
+        # if reg_form.personal_details_complete or reg_form.business_type:
+        #     progress["registration_complete"] = "started"
+        # if (
+        #     reg_form.personal_details_complete and 
+        #     reg_form.address_details_complete and 
+        #     reg_form.business_type
+        # ):
+        #     progress["registration_complete"] = "completed"
 
-    # Documents
-    documents = Document.query.filter_by(user_id=user_id).first()
+    # ✅ Store details — must resolve via SpazaOwner first
+    spaza_owner = SpazaOwner.query.filter_by(user_profile_id=user_profile_id).first()
+    if spaza_owner:
+        store = StoreDetails.query.filter_by(owner_id=spaza_owner.owner_id).first()
+        if store:
+            if store.reg_status == "registered":
+                progress["store_details_complete"] = "completed"
+            elif store.reg_status in ("submitted", "draft"):
+                progress["store_details_complete"] = "started"
+
+    # ✅ Documents uploaded by user_profile_id
+    documents = Document.query.filter_by(uploaded_by_user_id=user_profile_id).all()
     if documents:
-        if documents.reviewed_status == "approved":
+        approved_docs = any(doc.reviewed_status == "approved" for doc in documents)
+        submitted_docs = any(doc.submitted_status == "submitted" and doc.reviewed_status == "pending" for doc in documents)
+
+        if approved_docs:
             progress["documents_uploaded"] = "completed"
-        elif documents.submitted_status =="submitted" and documents.reviewed_status =="pending":
+        elif submitted_docs:
             progress["documents_uploaded"] = "started"
-        else :
-            progress["documents_uploaded"] = "not-started"
 
     return progress
+
 
 
 # For users with a user profile , they can now register their spaza shop
@@ -107,7 +124,7 @@ def spachainauth_register():
         flash('User profile not loaded correctly. Please complete your profile first.', category='error')
         return redirect(url_for('naledi.naledi_sign_up'))
 
-    user_id = user_profile.id
+    user_id = user_profile.user_profile_id
     email = user_profile.email
     cellno = user_profile.cellno
 
@@ -150,31 +167,7 @@ def spachainauth_register():
             return redirect(url_for('spachainauth.spachainauth_register'))
 
         try:
-            existing_owner = SpazaOwner.query.filter_by(user_id=user_id).first()
-            if not existing_owner:
-                new_owner = SpazaOwner(
-                    name=first_name.strip(),
-                    surname=last_name.strip(),
-                    email=email,
-                    address=street_address.strip(),
-                    said=id_number.strip() if id_number else 'N/A',
-                    user_id=user_id
-                )
-                db.session.add(new_owner)
-                db.session.commit()
-                flash('Spaza Owner registration successful!', category='success')
-                print(f"✅ SpazaOwner created: {new_owner}")
-            else:
-                flash('Spaza Owner already exists.', category='info')
-                print(f"ℹ️ Existing SpazaOwner found for User ID: {user_id}")
-
-        except Exception as e:
-            db.session.rollback()
-            flash(f"An error occurred during owner registration: {str(e)}", category='error')
-            print(f"❌ Error during SpazaOwner creation: {str(e)}")
-            return redirect(url_for('spachainauth.spachainauth_register'))
-
-        try:
+        # ✅ 1. Create the RegistrationForm first
             registration = RegistrationForm(
                 user_id=user_id,
                 business_type=business_type.strip(),
@@ -191,17 +184,33 @@ def spachainauth_register():
                 province=province.strip(),
                 district_mnc=district_mnc.strip(),
                 status="submitted"
-            )
+                )
             db.session.add(registration)
+            db.session.flush()  # 👈 ensures reg_id is available before commit
+
+            # ✅ 2. Now use registration.reg_id to create SpazaOwner
+            existing_owner = SpazaOwner.query.filter_by(user_profile_id=user_id).first()
+            if not existing_owner:
+                new_owner = SpazaOwner(
+                    name=first_name.strip(),
+                    surname=last_name.strip(),
+                    email=email,
+                    address=street_address.strip(),
+                    said=id_number.strip() if id_number else 'N/A',
+                    user_profile_id=user_id,
+                    reg_id=registration.reg_id  # ✅ assign the FK properly
+                )
+                db.session.add(new_owner)
+
             db.session.commit()
-            flash('Main registration successful!', category='success')
-            print(f"✅ RegistrationForm created: {registration}")
-            return redirect(url_for('spachainauth.spachainauth_owner_details', user_id=user_id))
+            flash('Registration successful!', category='success')
+            #return redirect(url_for('spachainauth.spachainauth_owner_details', user_id=user_id))
+            return redirect(url_for('spachainauth.spachainauth_home', user_id=user_id))
 
         except Exception as e:
             db.session.rollback()
-            flash(f"An error occurred during registration: {str(e)}", category='error')
-            print(f"❌ Error during RegistrationForm creation: {str(e)}")
+            flash(f"❌ Error during registration: {str(e)}", category='error')
+            print(f"❌ Error: {e}")
             return redirect(url_for('spachainauth.spachainauth_register'))
 
     return render_template('spachainauth_register.html', title='Spaza Owner Registration')
@@ -215,78 +224,76 @@ def spachainauth_home():
     return render_template("spachainauth_home.html", user=current_user) """
 
 # route to retun=rn the logged on user to the their dashboard
-@spachainauth.route('/home')
+@spachainauth.route("/home")
 @login_required
 def spachainauth_home():
-    
-    print("reached spa chain auth home now now")
-    spaza_owner = SpazaOwner.query.filter_by(user_id=current_user.id).first()
-    
-    # Initialize store variable to None as a fallback
+    print("Reached SpachainAuth Home")
+
+    # Use user_profile_id for consistency
+    user_id = current_user.user_profile_id
+    spaza_owner = SpazaOwner.query.filter_by(user_profile_id=user_id).first()
+
     store = None
-    progress = get_registration_progress(current_user.id)  # Fetch progress data ✅
+    progress = get_registration_progress(user_id)  # ✅ Pass correct ID
+    verifications = generate_verification_status(user_id)
+    compliance_status = generate_compliance_status(user_id)
 
     if spaza_owner:
-        
-        # Query for the store details
-        store = StoreDetails.query.filter_by(owner_id=spaza_owner.id).first()
-        
+        store = StoreDetails.query.filter_by(owner_id=spaza_owner.owner_id).first()
+
         if store:
-            # Check for both registered and draft statuses
-            if store.reg_status == 'registered' or store.reg_status == 'draft': 
-                print("Store has been registered or is in draft status")
+            if store.reg_status in ['registered', 'draft']:
+                print("Store is registered or draft")
                 current_user.has_registered_store = True
                 if store.reg_status == 'registered':
-                    flash('You have already registered your store!', category='success')
+                    flash('You have already registered your store!', 'success')
                 else:
-                    flash('Your store is in draft status. Please complete the registration.', category='info')
+                    flash('Your store is in draft status. Please complete the registration.', 'info')
             else:
                 current_user.has_registered_store = False
-                flash('Your store registration is pending or in an unknown status.', category='warning')
+                flash('Your store registration is pending or unknown.', 'warning')
         else:
-            # If store is not found, handle this case too
             current_user.has_registered_store = False
-            flash('No store registered!', category='warning')
+            flash('No store registered yet.', 'warning')
     else:
         current_user.has_registered_store = False
 
-    return render_template("spachainauth_home.html", user=current_user, store=store, progress=progress)  # ✅ Pass progress
+    return render_template("spachainauth_home.html", user=current_user, store=store, progress=progress,verifications=verifications, compliance_status=compliance_status)
 
 # owner details for the spaza shop owner
-@spachainauth.route('/owner-details/<int:user_id>', methods=['GET', 'POST'])
+#@spachainauth.route('/owner-details/<int:user_id>', methods=['GET', 'POST'])
+@spachainauth.route('/owner-details', methods=['GET', 'POST'])
 @login_required
-def spachainauth_owner_details(user_id):
-    #user = UserProfile.query.get(user_id)
-    user = UserProfile.query.filter_by(id=user_id).first()
+def spachainauth_owner_details():
+    user = current_user  # ✅ Corrected from `current_user.use`
 
     if not user:
         flash('No user profile exists. Ensure your registration is completed.', category='error')
         return redirect(url_for('naledi.naledi_sign_up'))
-    
-    registration = RegistrationForm.query.filter_by(user_id=user_id).first()
+
+    registration = RegistrationForm.query.filter_by(user_id=user.user_profile_id).first()
     if not registration:
         flash('No registration details found. Please complete the registration form first.', category='error')
-        return redirect(url_for('spachainauth.spachainauth_register', user_id=user_id)) 
+        return redirect(url_for('spachainauth.spachainauth_register'))
 
-    owner = None
+    # Check if owner already exists
+    owner = SpazaOwner.query.filter_by(user_profile_id=user.user_profile_id).first()
 
     if request.method == 'POST':
-        # Get form data
+        # Form inputs
         name = request.form.get('name')
         surname = request.form.get('surname')
         email = request.form.get('email')
         address = request.form.get('address')
         said = request.form.get('said')
 
-        # Check if owner details already exist for this user
-        owner = SpazaOwner.query.filter_by(user_id=user.id).first()
         if owner:
             flash('Owner details already exist.', category='error')
-            return redirect(url_for('spachainauth.spachainauth_owner_details', user_id=owner.user_id))
+            return redirect(url_for('spachainauth.spachainauth_owner_details'))
 
-        # Add new owner details
+        # ✅ Create new owner
         new_owner = SpazaOwner(
-            user_id=user.id,
+            user_profile_id=user.user_profile_id,
             name=name,
             surname=surname,
             email=email,
@@ -296,12 +303,9 @@ def spachainauth_owner_details(user_id):
         db.session.add(new_owner)
         db.session.commit()
         flash('Owner details saved successfully!', category='success')
-        return redirect(url_for('spachainauth.spachainauth_owner_details', user_id=new_owner.user_id))
+        return redirect(url_for('spachainauth.spachainauth_owner_details'))
 
-    # GET request — correctly fetch owner using user_id
-    owner = SpazaOwner.query.filter_by(user_id=user.id).first()
-
-    return render_template("spachainauth_owner_details.html", user=user, owner=owner,registration=registration)
+    return render_template("spachainauth_owner_details.html", user=user, owner=owner, registration=registration)
 
 
 # define a route to make spaza owner available to all templates
@@ -309,7 +313,8 @@ def spachainauth_owner_details(user_id):
 @spachainauth.context_processor
 def inject_spaza_owner():
     if current_user.is_authenticated:
-        owner = SpazaOwner.query.filter_by(user_id=current_user.id).first()
+        owner = SpazaOwner.query.filter_by(user_profile_id=current_user.user_profile_id).first()
+
         return dict(spaza_owner=owner)
     return dict(spaza_owner=None)  
 
@@ -319,158 +324,139 @@ def inject_spaza_owner():
 @spachainauth.route('/store', methods=['GET', 'POST'])
 @login_required
 def spachainauth_store():
+    user_id = current_user.user_profile_id
+    user_profile = UserProfile.query.filter_by(user_profile_id=user_id).first()
 
-
-     # get the current user profile first
-    user_id = current_user.id
-    user_profile = UserProfile.query.filter_by(id=user_id).first()
     if not user_profile:
         flash('No user profile found. Please complete your profile first.', category='error')
         return redirect(url_for('naledi.naledi_sign_up'))
-    
-    #step 2 : check for the owner details
-    spaza_owner = SpazaOwner.query.filter_by(user_id=user_id).first()
-    
-    existing_stores =[]
-    
-    # if user registration form is not completed, redirect to the registration form
-    if not spaza_owner:
-        flash('You need to complete your registration. Please complete owner details first.', category='error')
-        return redirect(url_for('spachainauth.spachainauth_register'))
-        #return redirect(url_for('spachainauth.spachainauth_owner_details', user_id=user_id))
-    
-    # for the exsting owner m check existing stores
-    existing_stores = StoreDetails.query.filter_by(owner_id=spaza_owner.id).all()
 
+    spaza_owner = SpazaOwner.query.filter_by(user_profile_id=user_id).first()
+
+    if not spaza_owner:
+        flash('You need to complete your registration first.', category='error')
+        return redirect(url_for('spachainauth.spachainauth_register'))
+
+    existing_stores = StoreDetails.query.filter_by(owner_id=spaza_owner.owner_id).all()
 
     if request.method == 'POST':
-        # Extract common store fields
-        user_id = current_user.id
-        storetype = request.form.get('storetype')
-        store_name = request.form.get('store_name')
-        storevolume = request.form.get('storevolume')
-        cicpno = request.form.get('cicpno')
-        sarsno = request.form.get('sarsno')
-        permitid = request.form.get('permitid')
-        zonecertno = request.form.get('zonecertno')
-        #compstatus = request.form.get('compstatus')
-        ownershipstatus = request.form.get('ownershipstatus')
-        storeaddress = request.form.get('storeaddress')
-        city = request.form.get('city')
-        postal_code = request.form.get('postal_code')
-        province = request.form.get('province')
-        district_mnc = request.form.get('municipality')
+        # Normalize inputs
+        storetype = request.form.get('storetype', '').strip()
+        store_name = request.form.get('store_name', '').strip()
+        storevolume = request.form.get('storevolume', '').strip()
+        cicpno = request.form.get('cicpno', '').strip()
+        sarsno = request.form.get('sarsno', '').strip()
+        permit_id = request.form.get('permitid', '').strip()
+        zonecertno = request.form.get('zonecertno', '').strip()
+        ownershipstatus = request.form.get('ownershipstatus', '').strip().lower()
+        storeaddress = request.form.get('storeaddress', '').strip()
+        city = request.form.get('city', '').strip()
+        postal_code = request.form.get('postal_code', '').strip()
+        province = request.form.get('province', '').strip()
+        district_mnc = request.form.get('municipality', '').strip()
 
-        # Extract Lessee fields if ownership status is Rented
-        leseefname = request.form.get('leseefname')
-        leseelname = request.form.get('leseelname')
-        lesee_id = request.form.get('lesee_id')
+        # Lessee fields
+        leseefname = request.form.get('leseefname', '').strip()
+        leseelname = request.form.get('leseelname', '').strip()
+        lesee_id_no = request.form.get('lesee_id_no', '').strip()
 
-        # Validate missing store fields
+        # Validate required store fields
         required_fields = {
             "Store Type": storetype, "Store Name": store_name, "Store Volume": storevolume,
-            "CIPC Number": cicpno, "SARS Number": sarsno, "Permit ID": permitid,
-            "Zoning Certification": zonecertno, 
-            "Ownership Status": ownershipstatus, "Store Address": storeaddress,
-            "City": city, "Postal Code": postal_code, "Province": province, "District": district_mnc
+            "CIPC Number": cicpno, "SARS Number": sarsno, "Permit ID": permit_id,
+            "Zoning Certification": zonecertno, "Ownership Status": ownershipstatus,
+            "Store Address": storeaddress, "City": city, "Postal Code": postal_code,
+            "Province": province, "District": district_mnc
         }
-
-        print(f"Store details: {required_fields}")
-
         missing_fields = [field for field, value in required_fields.items() if not value]
         if missing_fields:
-            flash(f"Store related Data missing. Please provide values for: {', '.join(missing_fields)}", category='error')
+            flash(f"Store data missing: {', '.join(missing_fields)}", category='error')
             return redirect(url_for('spachainauth.spachainauth_store'))
-         
-        # Validate missing lessee fields
-        required_lessee_fields = {"Lessee First Name": leseefname, "Lessee Last Name": leseelname, "Lessee ID": lesee_id}
-        missing_lessee_fields = [field for field, value in required_lessee_fields.items() if not value]
 
-        print(f"Lesee details: {required_lessee_fields}")
-        
-        # If ownership status is rented, lessee details are required
-        """if ownershipstatus == "Rented":
+        # ✅ If rented, lessee fields must be present
+        if ownershipstatus.lower() == "rented":
+            required_lessee_fields = {
+                "Lessee First Name": leseefname,
+                "Lessee Last Name": leseelname,
+                "Lessee ID": lesee_id_no
+            }
+            #missing_lessee_fields = [field for field, value in required_lessee_fields.items() if not value]
+            missing_lessee_fields = [label for label, val in required_lessee_fields.items() if not val]
             if missing_lessee_fields:
                 flash(f"Please provide the Store Renter's details: {', '.join(missing_lessee_fields)}", category='error')
-                return redirect(url_for('spachainauth.register_store'))"""
+                return redirect(url_for('spachainauth.spachainauth_store'))
 
-
-       
-        
-
-        progress = get_registration_progress(current_user.id)  # Fetch progress data ✅
-        # Create store record
         try:
-    
+            # ✅ Create Store record
             store = StoreDetails(
-                storetype=storetype.strip(),
-                store_name=store_name.strip(),
-                storevolume=storevolume.strip(),
-                cicpno=cicpno.strip(),
-                sarsno=sarsno.strip(),
-                permitid=permitid.strip(),
-                zonecertno=zonecertno.strip(),
+                storetype=storetype,
+                store_name=store_name,
+                storevolume=storevolume,
+                cicpno=cicpno,
+                sarsno=sarsno,
+                permit_id=permit_id,
+                zonecertno=zonecertno,
                 compstatus="submitted status",
-                ownershipstatus=ownershipstatus.strip(),
-                storeaddress=storeaddress.strip(),
-                city=city.strip(),
-                postal_code=postal_code.strip(),
-                province=province.strip(),
-                district_mnc=district_mnc.strip(),
-                owner_id=spaza_owner.id
+                ownershipstatus=ownershipstatus,
+                storeaddress=storeaddress,
+                city=city,
+                postal_code=postal_code,
+                province=province,
+                district_mnc=district_mnc,
+                owner_id=spaza_owner.owner_id
             )
             db.session.add(store)
-            db.session.commit() # commit to generate store.id
-            flash("Store details saved successfully!", category="success")
+            db.session.flush()  # ✅ So we can get store.store_id before commit
 
-        # Create Lessee record if ownership status is Rented
-            if ownershipstatus == "Rented":
-                if missing_lessee_fields:
-                    flash(f"Please provide the Store Renter's details: {', '.join(missing_lessee_fields)}", category='error')
-                    return redirect(url_for('spachainauth.spachainauth_store'))
-                else:
-                            new_lesee = Lesee(
-                                leseefname=leseefname.strip(),
-                                leseelname=leseelname.strip(),
-                                lesee_id=lesee_id.strip(),
-                                leseeemail="draft@example.com",
-                                leseeaddress="draft address",
-                                leseestoreid=store.id,  # Link to the newly created store
-                                spazaownerid=spaza_owner.id  # Link to the spaza owner
-                            )
-                            db.session.add(new_lesee)
-                            db.session.commit()      # create a new lessee record using the store.id             
-                            flash("Lesee details saved successfully!", category="success")
-                            
-            return redirect(url_for('spachainauth.spachainauth_home',user=current_user))
+           
+            # ✅ Only add Lessee if rented
+            if ownershipstatus.lower() == "rented":
+                new_lesee = Lesee(
+                    leseefname=leseefname,
+                    leseelname=leseelname,
+                    lesee_id_no=lesee_id_no,
+                    leseeemail="draft@example.com",
+                    leseeaddress="draft address",
+                    leseestoreid=store.store_id,
+                    owner_id=spaza_owner.owner_id
+                )
+                db.session.add(new_lesee)
+
+            db.session.commit()
+            flash("Store (and lessee if applicable) saved successfully!", category="success")
+            return redirect(url_for('spachainauth.spachainauth_home'))
+
         except Exception as e:
             db.session.rollback()
-            flash(f"Error saving lessee details: {str(e)}", category="error")
-            return redirect(url_for('spachainauth.spachainauth_store',user=current_user,progress=progress))
+            flash(f"Error saving store or lessee: {str(e)}", category="error")
+            return redirect(url_for('spachainauth.spachainauth_store'))
 
-    # Handle non-POST requests
-    return render_template( 'spachainauth_store.html', title='Spaza Owner Registration',user=current_user,
-                                existing_stores=existing_stores
-                            )
+    # GET request   
+    return render_template(
+        'spachainauth_store.html',
+        title='Spaza Owner Store Details',
+        user=current_user,
+        existing_stores=existing_stores
+    )
+
 
 
 #Define to help determine if there are exsiting store for a registered owner
 @spachainauth.route('/store_manage', methods=['GET'])
 @login_required
 def spachainauth_store_manage():
-    user_id = current_user.id
-    spaza_owner = SpazaOwner.query.filter_by(user_id=user_id).first()
+    user_id = current_user.user_profile_id
+    spaza_owner = SpazaOwner.query.filter_by(owner_id=user_id).first()
 
     existing_stores = []
     if spaza_owner:
-        existing_stores = StoreDetails.query.filter_by(owner_id=spaza_owner.id).all()
+        existing_stores = StoreDetails.query.filter_by(owner_id=spaza_owner.owner_id).all()
 
     return render_template(
         'spachainauth_store_manage.html',
         user=current_user,
         existing_stores=existing_stores
     )
-
 
 
 # Route to capture food list items for the store 
@@ -489,7 +475,7 @@ def spachainauth_food_items():
 
         # Save food items to the database
         food_entry = FoodItems(
-            user_id=current_user.id,
+            user_id=current_user.user_profile_id,
             selected_items=selected_items
         )
         try:
@@ -508,16 +494,16 @@ def spachainauth_food_items():
 @spachainauth.route('/health_self_check', methods=['GET', 'POST'])
 @login_required
 def spachainauth_health_self_check():
-    user_id = current_user.id
+    user_id = current_user.user_profile_id
 
     print(f"Health Compliance User ID: {user_id}")
 
-    owner = SpazaOwner.query.filter_by(user_id=user_id).first()
+    owner = SpazaOwner.query.filter_by(owner_id=user_id).first()
     if not owner:
         flash('Owner details not found. Please complete owner details first.', category='error')
-        return redirect(url_for('spachainauth.owner_details', user_id=current_user.id))
+        return redirect(url_for('spachainauth.owner_details', user_id=current_user.user_profile_id))
 
-    print(f"health Owner ID: {owner.id}")
+    print(f"health Owner ID: {owner.user_id}")
     if request.method == 'POST':
         # Capture form data and structure it with a status field
         sanitary_facilities = {
@@ -574,7 +560,7 @@ def spachainauth_health_self_check():
 
         # Create a new record in the HealthCompliance table
         health_compliance = HealthCompliance(
-            user_id=current_user.id,
+            user_id=current_user.user_id,
             sanitary_facilities=sanitary_facilities,
             cleaning_facilities=cleaning_facilities,
             handwashing_stations=handwashing_stations,
@@ -606,7 +592,13 @@ def spachainauth_health_self_check():
 @spachainauth.route('/registration_progress', methods=['GET', 'POST'])
 @login_required
 def spachainauth_registration_progress():
-    user_id = current_user.id
+    user_id = current_user.user_profile_id
+
+    # Check if the user has a profile
+    # user_profile = UserProfile.query.get(user_id)
+    # if not user_profile:
+    #     flash('No user profile found. Please complete your profile first.', category='error')
+    #     return redirect(url_for('naledi.naledi_sign_up'))
 
     # Get the registration progress
     progress = get_registration_progress(user_id)
@@ -634,7 +626,7 @@ def spachainauth_registration_progress():
 @spachainauth.route('/userprofile', methods=['GET', 'POST'])
 @login_required
 def spachainauth_userprofile():
-    user_id = current_user.id
+    user_id = current_user.user_profile_id
     user_profile = UserProfile.query.get(user_id)
 
     form = UserProfileForm(obj=user_profile)
@@ -657,7 +649,7 @@ def spachainauth_spusers():
 @login_required
 def update_profile():
    
-    owner = SpazaOwner.query.filter_by(user_id=current_user.id).first()
+    owner = SpazaOwner.query.filter_by(user_profile_id=current_user.user_profile_id).first()
 
     if request.method == 'POST':
         name = request.form.get('name')
@@ -675,7 +667,7 @@ def update_profile():
         # Update or create owner profile
        # owner = SpazaOwner.query.filter_by(user_id=current_user.id).first()
         if not owner:
-            owner = SpazaOwner(user_id=current_user.id)
+            owner = SpazaOwner(user_profile_id=current_user.user_profile_id)
             db.session.add(owner)
         owner.address = address
 
@@ -691,7 +683,7 @@ def update_profile():
 @login_required
 def spusers():
     # Check if the user has a profile or services to display
-    user_profile = UserProfile.query.get(current_user.id)
+    user_profile = UserProfile.query.get(current_user.user_profile_id)
     
     if not user_profile:
         # If no profile exists, redirect to registration or an appropriate page
@@ -707,9 +699,6 @@ def spusers():
 def spachainauth_services():
     #return render_template("services.html", user=current_user)
     return render_template("spachainauth_services.html", user=current_user)
-
-
-
 
 
 
@@ -733,14 +722,14 @@ def spachainauth_upload_docs():
     }
 
     # Fetch already uploaded documents
-    existing_docs = {doc.document_type: doc for doc in Document.query.filter_by(user_id=current_user.id).all()}
+    existing_docs = {doc.document_type: doc for doc in Document.query.filter_by(uploaded_by_user_id=current_user.user_profile_id).all()}
 
     if request.method == 'POST':
         for field_name, document_type in document_types.items():
             file = request.files.get(field_name)
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
-                destination_blob_name = f'{current_user.id}/{document_type}_{filename}'
+                destination_blob_name = f'{current_user.user_id}/{document_type}_{filename}'
                 file_url = upload_to_gcs(file, destination_blob_name)
 
                 if document_type in existing_docs:
@@ -750,10 +739,10 @@ def spachainauth_upload_docs():
                 else:
                     # ✅ Add new document
                     new_document = Document(
-                        user_id=current_user.id,
+                        uploaded_by_user_id=current_user.user_profile_id,
                         document_type=document_type,
                         file_url=file_url,
-                        filename=filename,
+                        file_name=filename,
                         submitted_status ="submitted", # mark as submitted
                         reviewed_status ="pending", # Default
                         approved_status="pending"   # Default
@@ -791,14 +780,14 @@ def spachainauth_view_docs():
     }
 
     # Fetch existing documents
-    existing_docs = {doc.document_type: doc for doc in Document.query.filter_by(user_id=current_user.id).all()}
+    existing_docs = {doc.document_type: doc for doc in Document.query.filter_by(uploaded_by_user_id=current_user.user_profile_id).all()}
     
     if request.method == 'POST':
         for field_name, document_type in document_types.items():
             file = request.files.get(field_name)
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
-                destination_blob_name = f'{current_user.id}/{document_type}_{filename}'
+                destination_blob_name = f'{current_user.user_profile_id}/{document_type}_{filename}'
                 file_url = upload_to_gcs(file, destination_blob_name)
 
                 if document_type in existing_docs:
@@ -808,10 +797,10 @@ def spachainauth_view_docs():
                 else:
                     # ✅ Add new document (shouldn't happen here, but as a fallback)
                     new_document = Document(
-                        user_id=current_user.id,
+                       uploaded_by_user_id=current_user.user_profile_id,
                         document_type=document_type,
                         file_url=file_url,
-                        filename=filename
+                        file_name=filename
                     )
                     db.session.add(new_document)
 
@@ -842,7 +831,7 @@ def doc_verify_status():
     }
 
     # Fetch existing documents for the current user
-    existing_docs = {doc.document_type for doc in Document.query.filter_by(user_id=current_user.id).all()}
+    existing_docs = {doc.document_type for doc in Document.query.filter_by(uploaded_by_user_id=current_user.user_profile_id).all()}
 
     # Determine missing documents
     submitted_docs = {key: value for key, value in document_types.items() if key in existing_docs}
@@ -880,7 +869,7 @@ def generate_doc_status_dashboard(user_id):
         dict: A dictionary containing document status and registration progress.
     """
     # Fetch documents from the database
-    documents = Document.query.filter_by(user_id=user_id).all()
+    documents = Document.query.filter_by(uploaded_by_user_id=user_id).all()
 
     # Format documents for the dashboard
     formatted_documents = []
@@ -941,14 +930,14 @@ def get_health_compliance_data(user_id):
         return {"compliant": [], "missing": []}
 
     compliance_items = {
-        "Sanitary Facilities": health_compliance.sanitary_facilities,
-        "Cleaning Facilities": health_compliance.cleaning_facilities,
-        "Handwashing Stations": health_compliance.handwashing_stations,
-        "Waste Disposal": health_compliance.waste_disposal,
-        "Food Handling": health_compliance.food_handling,
-        "Food Storage": health_compliance.food_storage,
-        "Food Preparation": health_compliance.food_preparation,
-        "Food Prep Tools": health_compliance.food_prep_tools,
+        "Sanitary Facilities": health_compliance.sanitary_fac,
+        "Cleaning Facilities": health_compliance.cleaning_fac,
+        "Handwashing Stations": health_compliance.hand_wash_fac,
+        "Waste Disposal": health_compliance.waste_disp,
+        "Food Handling": health_compliance.food_hand_fac,
+        "Food Storage": health_compliance.food_store_fac,
+        "Food Preparation": health_compliance.foodprep_proc,
+        "Food Prep Tools": health_compliance.foodprep_tool,
         "Employees": health_compliance.employees
     }
 
@@ -971,6 +960,90 @@ def get_health_compliance_data(user_id):
     print(f"✅ FINAL Compliance Data: {result}")  # Debugging output
     return result
 
+#function to provide simplifoed view for the end uer to see their verification status relating to :
+# 1. Indentity verification
+# 2. Tax clearance
+# 3. Company registration
+# 4. Police clearance
+# 5. Lease or title deed 
+   
+
+# function to generate a dashboard for the end user with dynamic data. This function will enable the user to see their status in a dashboard format
+# and will be used to display the status of the documents uploaded by the user
+def generate_verification_status(user_id):
+    """
+    Generate a dashboard for the end user with dynamic data.
+
+    Args:
+        user_id (int): The ID of the current user.
+
+    Returns:
+        dict: A dictionary containing verification statuses.
+    """
+    # Fetch records where FK matches the spaza_owner_id
+    identity_verifications = IdentityVerification.query.filter_by(spaza_owner_id=user_id).all()
+
+    verifications = []
+    for ver in identity_verifications:
+        verifications.append({
+            "Owner Identity Verification": ver.owner_verified_id,
+            "Lesee Identity Verification": ver.lesee_verified_id,
+            "Tax Clearance": ver.tax_clearance,
+            "Company Registration": ver.company_registration,
+            "Police Clearance": ver.police_clearance,
+        })
+
+    return {
+        "Verification Status": verifications
+    }
+
+
+# function to provide a simplified view of the municipal compliance status for the end user. This function reflecs status as updated by muncipal officers
+def generate_compliance_status(user_id):
+    """
+    Generate a dashboard for the end user with compliance info.
+
+    Args:
+        user_id (int): The ID of the current user.
+
+    Returns:
+        dict: A dictionary containing compliance statuses.
+    """
+    compliance_records = MunicipalCompliance.query.filter_by(spaza_owner_id=user_id).all()
+
+    compliance_status = []
+    for comp in compliance_records:
+        compliance_status.append({
+            "Certificate Of Acceptability": comp.verified_coa,
+            "Fire Inspection": comp.verified_fire_insp,
+            "Zoning Certificate": comp.verified_zoning_cert,
+            "Electrical Certificate": comp.verified_elec_cert,
+            "Building Certificate": comp.verified_building_cert,
+        })
+
+    return {
+        "Compliance Status": compliance_status
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Route to displace compliance status  for the store owner. The compliance excerciser is performed by the health inspector
 # and the store owner is notified of the compliance status
 # Route to display health compliance actions for the store owner
@@ -979,23 +1052,21 @@ def get_health_compliance_data(user_id):
 def health_compliance():
     print("reached health compliance")
     # Check if the user has a profile or services to display
-    user_profile = UserProfile.query.get(current_user.id)
+    user_profile = UserProfile.query.get(current_user.user_profile_id)
     if not user_profile:
         # If no profile exists, redirect to registration or an appropriate page
         flash("Please complete your profile to access services.", category="warning")
         return redirect(url_for('spachainauth.sign_up'))
    
-    compliance_data = get_health_compliance_data(current_user.id)
+    compliance_data = get_health_compliance_data(current_user.user_profile_id)
     if not compliance_data:
         flash("No health compliance data found.", category="warning")
         #return redirect(url_for('spachainauth.spachainauth_health_self_check'))
 
     return render_template("spachainauth_health_compliance.html", user=current_user,compliance_data=compliance_data)
 
-
-
-
-def get_fire_comoliance_data(user_id):
+# function to get fire compliance data for the store owner. This will be complete later
+def get_fire_compliance_data(user_id):
     """Fetch and format health compliance data for the dashboard."""
     fire_compliance = HealthCompliance.query.filter_by(user_id=user_id).first()
 
@@ -1037,11 +1108,13 @@ def get_fire_comoliance_data(user_id):
 
 
 
+
+
 # Route to display  fire safety compliance actions for the store owner
 @spachainauth.route('/fire_compliance', methods=['GET', 'POST'])
 @login_required
 def fire_compliance():
-     user_profile = UserProfile.query.get(current_user.id)
+     user_profile = UserProfile.query.get(current_user.user_id)
      if not user_profile:
         # If no profile exists, redirect to registration or an appropriate page
         flash("Please complete your profile to access services.", category="warning")
@@ -1080,10 +1153,10 @@ def spachainauth_dashboard():
     Render the document view page with submitted and missing documents.
     """
     # Generate dashboard data
-    dashboard_data = generate_doc_status_dashboard(current_user.id)
+    dashboard_data = generate_doc_status_dashboard(current_user.user_profile_id)
 
     # Fetch health compliance data
-    compliance_data = get_health_compliance_data(current_user.id)
+    compliance_data = get_health_compliance_data(current_user.user_profile_id)
 
     print(f"Dashboard Data: {compliance_data}")
 

@@ -1,4 +1,4 @@
-from mncchain import mncauth
+from naledi.mncchain import mncauth
 from flask import Blueprint, render_template, request, flash, redirect, url_for, session, current_app
 from flask_login import login_required, current_user, LoginManager, logout_user,login_user
 from core.naledimodels import db, MncUser, UserProfile, Municipal, MncDepartment
@@ -6,12 +6,13 @@ from core.utils import set_password, check_password, verify_reset_token,exchange
 #from admin_utils import send_registration_email  # Import email function
 from flask_mailman import EmailMessage 
 from functools import wraps
-from core.oauth import azure,official_login_manager,verify_azure_token
+from core.oauth_setup import verify_azure_token
 from itsdangerous import SignatureExpired, BadSignature
 import smtplib
 import re, os
 import jwt, requests
 from werkzeug.security import check_password_hash
+from core import  official_login_manager, exchange_id_token_for_access_token
   
 # This blueprint is dedicated to user manangement for azure routes ( admin and offical users)
 

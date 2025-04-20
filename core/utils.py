@@ -27,6 +27,8 @@ from google.cloud import storage
 from google.oauth2.credentials import Credentials
 import os
 from flask import session
+import sys
+from dotenv import load_dotenv
 
 
 
@@ -336,6 +338,24 @@ def generate_temporary_download_url(bucket_name, blob_name, access_token):
         print(f"Error fetching file: {response.status_code} - {response.text}")
         return None
     
+
+
+# helper function to handle loading of different environment files for store, official and admin apps
+# utils/env_loader.py
+
+
+def load_env(app_name: str):
+    dotenv_file = f".env.preprod.{app_name}"
+    dotenv_path = os.path.join(os.path.dirname(__file__), "..", "env", dotenv_file)
+    full_path = os.path.abspath(dotenv_path)
+
+    print(f"📍 Loading environment for: {app_name}")
+    print(f"🧾 Full path: {full_path}")
+    if not os.path.exists(full_path):
+        print(f"❌ Error: {dotenv_file} not found at {full_path}")
+        sys.exit(1)
+
+    load_dotenv(dotenv_path=full_path, verbose=True)
 
 
 

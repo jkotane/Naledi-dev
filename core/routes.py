@@ -4,7 +4,8 @@ from flask_login import login_user, logout_user, login_required, current_user, L
 from werkzeug.security import generate_password_hash, check_password_hash
 from core.naledimodels import UserProfile, User, StoreDetails, SpazaOwner,RegistrationForm, Document, MncUser                           # Import the User model
 from .utils import is_valid_email, is_valid_cellno, is_valid_password, generate_dashboard_layout,fetch_data, set_password,check_password                                                 # Import from utils.py
-from core import oauth,user_login_manager                                                                                                        # Import the OAuth instance from naledi/__init__.py
+from core import oauth,user_login_manager
+#from .oauth import oauth,user_login_manager,setup_azure_oauth                                                                                                       # Import the OAuth instance from naledi/__init__.py
 from core import db, mail
 from google.oauth2 import id_token   
 from msal import PublicClientApplication
@@ -33,6 +34,18 @@ from functools import wraps
 
 google = oauth.create_client('google')  # create the google oauth client
 
+# This is the decorator for the progress . it is not suiatble here but will put in anyway since this route is tightlu linked to spachain auth
+
+@naledi_bp.context_processor
+def inject_progress():
+    if current_user.is_authenticated:
+        return {"progress": get_registration_progress(current_user.user_id)}
+    return {"progress": {
+        "profile_complete": "not-started",
+        "registration_complete": "not-started",
+        "store_details_complete": "not-started",
+        "documents_uploaded": "not-started"
+    }}
 
 
 
@@ -92,7 +105,7 @@ def landing_page():
     # If user is authenticated, fetch progress
     progress = None
     if current_user.is_authenticated:
-        progress = get_registration_progress(current_user.id)
+        progress = get_registration_progress(current_user.user_id)
         print("Rendering the landing page with progress:", progress)
         return render_template("naledibase.html", user=current_user, progress=progress)
     return render_template("naledi_home.html", user=current_user,progress=progress)    
@@ -141,7 +154,7 @@ def naledi_login():
                 flash('Invalid password. Please try again.', category='error')
         else:
             flash('No account found with this email.', category='error')
-            return redirect(url_for('naledi.sign_up'))
+            return redirect(url_for('naledi.naledi_sign_up'))
 
     # ✅ Google login URL for GET requests or after errors
     google_login_url = url_for('naledi.google_auth', _external=True)
@@ -171,12 +184,15 @@ def naledi_reset_password(token):
             flash('Passwords do not match.', 'error')
             return redirect(url_for('naledi.naledi_reset_password', token=token))
 
-        user.save_password(new_password)
+        # ✅ Set new password and commit
+        user.set_password(new_password)
+        db.session.commit()
 
-        #flash('Password reset successful! You can now log in.', 'success')
-        #return redirect(url_for('naledi.admin_azure_login'))
+        flash('Password reset successful! You can now log in.', 'success')
+        return redirect(url_for('naledi.naledi_login'))  # Or your preferred login page
 
     return render_template('naledi_reset_password.html', token=token)
+
 
 # ✅ Admin Forgot Password
 @naledi_bp.route('/forgot_password', methods=['GET', 'POST'])
@@ -245,16 +261,16 @@ def naledi_home():
     """
 
 
-    spaza_owner = SpazaOwner.query.filter_by(user_id=current_user.id).first()
+    spaza_owner = SpazaOwner.query.filter_by(user_profile_id=current_user.user_profile_id).first()
     
     # Initialize store variable to None as a fallback
     store = None
-    progress = get_registration_progress(current_user.id)  # Fetch progress data ✅
+    progress = get_registration_progress(current_user.user_profile_id)  # Fetch progress data ✅
 
     if spaza_owner:
         
         # Query for the store details
-        store = StoreDetails.query.filter_by(owner_id=spaza_owner.id).first()
+        store = StoreDetails.query.filter_by(owner_id=spaza_owner.owner_id).first()
         
         if store:
             # Check for both registered and draft statuses
@@ -467,7 +483,7 @@ def get_registration_progress(user_id):
     }
 
     # Check if profile is complete
-    user_profile = UserProfile.query.filter_by(id=user_id).first()
+    user_profile = UserProfile.query.filter_by(user_id=user_id).first()
     if user_profile:
         progress["profile_complete"] = True
 
@@ -482,7 +498,7 @@ def get_registration_progress(user_id):
         progress["store_details_complete"] = True
 
     # Check if documents are uploaded
-    documents = Document.query.filter_by(user_id=user_id).first()
+    documents = Document.query.filter_by(uploaded_by_user_id=user_id).first()
     if documents:
         progress["documents_uploaded"] = True
 
@@ -493,7 +509,7 @@ def get_registration_progress(user_id):
 @naledi_bp.route('/registration_progress', methods=['GET', 'POST'])
 @login_required
 def naledi_registration_progress():
-    user_id = current_user.id
+    user_id = current_user.user_id
 
     # Get the registration progress
     progress = get_registration_progress(user_id)
@@ -716,11 +732,6 @@ def official_forgot_password():
 
 
 
-
-
-
-
-
 # The route to validate registration of an official user
 @naledi_bp.route('/official/register/<token>', methods=['GET', 'POST'])
 def official_register(token):
@@ -759,9 +770,6 @@ def official_register(token):
         return redirect(url_for('naledi.official_azure_login'))
 
     return render_template('official_register.html', user=user, token=token)
-
-
-
 
 
 

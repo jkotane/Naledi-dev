@@ -1,9 +1,11 @@
 import sys
-from apps import create_app
 import os
+from dotenv import load_dotenv
 
 # temporary fix for the issue with the dotenv package
 from dotenv import load_dotenv
+
+sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
 print("✅ Loading .env.preprod.admin file...")
 
@@ -20,12 +22,12 @@ if not os.path.exists(dotenv_path):
 
 load_dotenv(dotenv_path=dotenv_path, verbose=True)
 
-
+from core import create_app
 db_uri = os.getenv("SQLALCHEMY_DATABASE_URI") or os.getenv("DATABASE_URL")
 try:
     print("trying to create flask app")
-    app = create_app()  # Explicitly call the function
-    from main_store import app
+    app = create_app("admin")  # Explicitly call the function
+    #from main_store import app
    # print(app.url_map)       # to be removed after debuging
 
     print("✅ Flask Application Created Successfully")

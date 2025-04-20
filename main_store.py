@@ -2,6 +2,8 @@ import sys
 import os
 from dotenv import load_dotenv
 
+sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
+
 print("✅ Loading .env.preprod.store file...")
 
 # Correct path joining
@@ -30,6 +32,7 @@ try:
 except Exception as e:
     print("❌ ERROR: App creation failed:", e)
     sys.exit(1)
+
 
 if __name__ == "__main__":
     try:
