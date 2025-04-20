@@ -1,8 +1,9 @@
 from flask import Flask
-from core.extensions import db, oauth, migrate, mail, generate_serializer, csrf
+from core.extensions import db, oauth, migrate, mail, generate_serializer
 from naledi.spazachain.spachainauth import spachainauth
 from naledi.spazachain.spachainview import spachainview
 from core.routes import naledi_bp
+from core import csrf
 
 def create_app_store():
     app = Flask(__name__, template_folder="../templates", static_folder="../static")
