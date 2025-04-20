@@ -20,3 +20,5 @@ config.py
 config.py
 .DS_Store
 .envvenv-dev/
+env/
+.env*
