@@ -20,6 +20,7 @@
   {% endwith %}
 
   <form method="POST" action="{{ url_for('admin.admin_pre_register') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <!-- First Name -->
     <div class="form-group col-md-6 mx-auto">
       <label for="fname">First Name</label>
@@ -40,17 +41,17 @@
 
     <!-- Municipality -->
     <div class="form-group col-md-6 mx-auto">
-      <label for="municipal_id">Municipality ID</label>
-      <input type="number" class="form-control" id="municipal_id" name="municipal_id" />
+      <label for="municipalid">Municipality ID</label>
+      <input type="number" class="form-control" id="municipalid" name="municipalid" />
     </div>
 
    <!-- Department (Fixed Layout) -->
     <div class="form-group col-md-6 mx-auto">
       <label for="dept_id">Department</label>
-      <select class="form-control" id="dept_id" name="dept_id" required>
+      <select class="form-control" id="deptid" name="deptid" required>
         <option value="">Select Department</option>
         {% for department in departments %}
-        <option value="{{ department.id }}">{{ department.deptname }}</option>
+        <option value="{{ department.mnc_dept_id }}">{{ department.deptname }}</option>
         {% endfor %}
       </select>
     </div>

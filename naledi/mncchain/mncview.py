@@ -22,7 +22,8 @@ import requests
 from google.oauth2.credentials import Credentials
 from google.auth.transport.requests import Request
 from sqlalchemy import select
-from core import  official_login_manager
+from core import  official_login_manager,exchange_id_token_for_access_token
+
 
 
 
@@ -177,7 +178,7 @@ def official_store_dashboard():
     )
     .outerjoin(HealthCompliance, StoreDetails.store_id == HealthCompliance.store_id)
     .join(Municipal, StoreDetails.district_mnc == Municipal.mncname)
-    .filter(Municipal.id == official_municipality)
+    .filter(Municipal.mncid == official_municipality)
     .order_by(HealthCompliance.updated_at.desc())  # ✅ Ensure latest compliance is fetched
     .all()
      )  
@@ -198,7 +199,7 @@ def official_health_review(store_id):
     store = StoreDetails.query.filter_by(store_id=store_id).first_or_404()
 
     # ✅ Fetch SpazaOwner record
-    spaza_owner = SpazaOwner.query.filter_by(id=store.owner_id).first()
+    spaza_owner = SpazaOwner.query.filter_by(owner_id=store.owner_id).first()
 
     if not spaza_owner:
       flash('Error: Store owner not found.', category='error')
@@ -458,10 +459,10 @@ def official_doc_dashboard():
             Document.approved_status,
             Document.file_url
         )
-        .join(SpazaOwner, StoreDetails.owner_id == SpazaOwner.id)
-        .join(Document, SpazaOwner.user_id == Document.user_id)  # Inner join for matching docs
+        .join(SpazaOwner, StoreDetails.owner_id == SpazaOwner.owner_id)
+        .join(Document, SpazaOwner.owner_id == Document.uploaded_by_user_id)  # Inner join for matching docs
         .join(Municipal, StoreDetails.district_mnc == Municipal.mncname)
-        .filter(Municipal.id == official_municipality)
+        .filter(Municipal.mncid == official_municipality)
         .order_by(StoreDetails.store_id, Document.uploaded_at.desc())
         .all()
     )

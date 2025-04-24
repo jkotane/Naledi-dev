@@ -49,6 +49,8 @@ csrf = CSRFProtect()
 # Define the naledi blueprint at the module level
 naledi_bp = Blueprint('naledi', __name__)
 
+official_bp = Blueprint('official', __name__)
+
 
 # ✅ Initialize two login managers
 user_login_manager = LoginManager()
@@ -57,9 +59,10 @@ user_login_manager = LoginManager()
 
 admin_manager = LoginManager()
 #admin_manager.session_protection = "strong"
-#admin_manager.login_view = 'naledi.naledi_admin_login'  # Admin login page
+admin_manager.login_view = 'adminauth.admin_login'  # Admin login page
 
 official_login_manager = LoginManager()
+official_login_manager.login_view = "mncauth.official_login"  # ✅ Login route for officials
 
 
 
@@ -223,6 +226,11 @@ def create_app(app_type=None):
         #from core.oauth_setup import setup_azure_oauth
         azure, jwks_client = setup_azure_oauth(oauth)
 
+        # Register the Azure OAuth client. attempt to make azure avaiabler to adminaut and mncauth
+       
+        import builtins
+        builtins.azure = azure
+
         """if app_type == "official":
              AZURE_TENANT_ID = os.getenv("AZURE_TENANT_ID")
         if not AZURE_TENANT_ID:
@@ -238,17 +246,41 @@ def create_app(app_type=None):
 
     elif app_type == "admin":
 
+          #from core.oauth_setup import setup_azure_oauth
+        azure, jwks_client = setup_azure_oauth(oauth)
+
+        # Register the Azure OAuth client. attempt to make azure avaiabler to adminaut and mncauth
+       
+        import builtins
+        builtins.azure = azure
+
+
         # ✅ Register Admin-Specific Blueprints **Outside the If Statement**
         from naledi.adminchain.adminroutes import admin_bp 
         from naledi.adminchain.adminauth import adminauth
 
         app.register_blueprint(admin_bp, url_prefix="/admin")
         app.register_blueprint(adminauth, url_prefix="/admin")
-
+        # register this blue print in both since the admin user has to register official users . If this not included here , the call to mncauth fails
+        from naledi.mncchain.mncauth import mncauth
+        from naledi.mncchain.mncview import mncview
+        app.register_blueprint(mncauth, url_prefix='/mncauth')
+        app.register_blueprint(mncview, url_prefix='/mncview')
 
     # ✅ Register Naledi Blueprints (Always Needed)
-    from core.routes import naledi_bp
-    app.register_blueprint(naledi_bp, url_prefix='/')
+
+    if app_type == "store":
+      from core.routes import naledi_bp
+      app.register_blueprint(naledi_bp, url_prefix='/')
+    elif app_type == "official":
+        from core.official_routes import official_bp
+        app.register_blueprint(official_bp, url_prefix='/')  
+    elif app_type == "admin":
+        from core.admin_routes import admin_bp
+        app.register_blueprint(admin_bp, url_prefix='/')    
+ 
+   
+
 
     # ✅ Configure Upload Folder and Sessions
     app.config['UPLOAD_FOLDER'] = 'uploads/'

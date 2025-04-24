@@ -23,6 +23,7 @@
   {% if not force_sso %}
   <!-- Traditional Login Form -->
   <form method="POST" action="{{ url_for('adminauth.admin_login') }}">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <div class="form-row">
       <div class="form-group col-md-6 mx-auto">
         <label for="email">Email</label>

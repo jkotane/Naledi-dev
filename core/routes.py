@@ -1,4 +1,4 @@
-from core import naledi_bp                                                                                                                  # Import the naledi blueprint
+from core import naledi_bp                                                                                                                 # Import the naledi blueprint
 from flask import Blueprint, render_template, request, flash, redirect, url_for, session, current_app,Flask
 from flask_login import login_user, logout_user, login_required, current_user, LoginManager
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -25,6 +25,7 @@ import secrets
 import smtplib
 import re
 from functools import wraps
+from core.oauth_setup import setup_azure_oauth
 
 
 # testing this option

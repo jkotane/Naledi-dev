@@ -86,7 +86,7 @@ def admin_dashboard():
         print("❌ Current user is NOT an admin.")
         return redirect(url_for('adminauth.admin_login'))
 
-    admin_municipality = current_user.municipalid
+    admin_municipality = current_user.mnc_user_id
 
     if not admin_municipality:
         flash("No admin-municipality assignment data found.", "error")
@@ -102,8 +102,8 @@ def admin_dashboard():
             MncUser.mnctitle,
             MncDepartment.deptname
         )
-        .join(MncDepartment, MncUser.deptid == MncDepartment.deptid)
-        .filter(MncUser.municipalid == admin_municipality)
+        .join(MncDepartment, MncUser.mnc_user_id == MncDepartment.mnc_dept_id)
+        .filter(MncUser.mnc_user_id == admin_municipality)
         .all()
     )
 
@@ -118,25 +118,25 @@ def admin_dashboard():
 def admin_pre_register():
     """Allows an admin to pre-register a municipal official."""
 
-    admin_municipality = current_user.municipalid
+    admin_municipality = current_user.mnc_user_id
 
     if not admin_municipality:
         flash("Error: No admin-municipality assignment data found.", "error")
         return redirect(url_for('admin.admin_dashboard'))
 
     # ✅ Fetch departments linked to admin's municipality
-    departments = MncDepartment.query.filter_by(municipalid=admin_municipality).all()
+    departments = MncDepartment.query.filter_by(mncid=admin_municipality).all()
 
     if request.method == 'POST':
         email = request.form.get('email')
         fname = request.form.get('fname')
         lname = request.form.get('lname')
-        deptid = request.form.get('dept_id')
+        deptid = request.form.get('deptid')
         job_title = request.form.get('job_title')
         contact = request.form.get('contact')
 
         # ✅ Validate department selection
-        selected_department = MncDepartment.query.filter_by(deptid=deptid, municipalid=admin_municipality).first()
+        selected_department = MncDepartment.query.filter_by(mnc_dept_id=deptid, mncid=admin_municipality).first()
         if not selected_department:
             flash("Invalid department selection.", "error")
             return redirect(url_for('admin.admin_pre_register'))
@@ -184,7 +184,7 @@ def admin_pre_register():
         flash(f"Pre-registration successful. Email sent to {email}.", "success")
         return redirect(url_for('admin.admin_dashboard'))
 
-    return render_template('admin_pre_register.html', municipal_id=admin_municipality, departments=departments)
+    return render_template('admin_pre_register.html', municipalid=admin_municipality, departments=departments)
 
 
 # ✅ Admin Email Confirmation

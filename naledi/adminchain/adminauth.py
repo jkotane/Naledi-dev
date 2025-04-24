@@ -12,6 +12,10 @@ from itsdangerous import SignatureExpired, BadSignature
 import smtplib
 import re
 import jwt, requests
+from core.oauth_setup import setup_azure_oauth
+import builtins
+azure = builtins.azure
+
   
 # This blueprint is dedicated to user manangement for azure routes ( admin and offical users)
 

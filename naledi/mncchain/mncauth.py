@@ -13,6 +13,9 @@ import re, os
 import jwt, requests
 from werkzeug.security import check_password_hash
 from core import  official_login_manager, exchange_id_token_for_access_token
+import builtins
+azure = builtins.azure
+
   
 # This blueprint is dedicated to user manangement for azure routes ( admin and offical users)
 
@@ -282,7 +285,7 @@ def official_azure_callback():
             login_user(user)
             session.modified = True
             print(f"✅ O tsene lenyora: {email}")
-            flash('Logged in successfully as Admin!', 'success')
+            flash('Logged in successfully as Official!', 'success')
             return redirect(url_for('mncview.official_dashboard'))  # You can use official_doc_dashboard too
         else:
             print(f"❌ Unauthorized access attempt: {email}")

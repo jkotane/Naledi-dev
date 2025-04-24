@@ -38,8 +38,8 @@ except Exception as e:
 
 if __name__ == "__main__":
     try:
-        port = int(os.getenv("PORT", 5001))  # Use PORT from Cloud Run (default to 8080)
+        port = int(os.getenv("PORT", 5003))  # Use PORT from Cloud Run (default to 8080)
         print(f"✅ Running Flask App on port {port}")
-        app.run(host="localhost", port=5001, debug=True)  # Force it to use the correct port
+        app.run(host="localhost", port=5003, debug=True)  # Force it to use the correct port
     except Exception as e:
         print("❌ ERROR: Flask App failed to run:", e)

@@ -13,7 +13,10 @@ from naledi.adminchain import adminroutes
 
 
 def register_azure_for_official():
+
     AZURE_TENANT_ID = os.getenv("AZURE_TENANT_ID")
+
+    #AZURE_TENANT_ID = os.getenv("AZURE_TENANT_ID")
     if not AZURE_TENANT_ID:
         raise ValueError("Azure Tenant ID is missing.")
 

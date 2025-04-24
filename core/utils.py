@@ -32,11 +32,6 @@ from dotenv import load_dotenv
 
 
 
-
-
-
-
-
 ALLOWED_EXTENSIONS = {'pdf', 'jpg', 'jpeg', 'png'}
 
 
@@ -211,7 +206,7 @@ logging.basicConfig(level=logging.DEBUG)
 def fetch_data():
     """Fetch data using SQLAlchemy ORM"""
     stores = StoreDetails.query.with_entities(
-        StoreDetails.id,
+        StoreDetails.store_id,
         StoreDetails.store_name,
         StoreDetails.storetype,
         StoreDetails.storeaddress,
