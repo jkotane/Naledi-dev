@@ -267,6 +267,7 @@ def naledi_home():
     # Initialize store variable to None as a fallback
     store = None
     progress = get_registration_progress(current_user.user_profile_id)  # Fetch progress data ✅
+    verifications = None
 
     if spaza_owner:
         
@@ -292,7 +293,7 @@ def naledi_home():
     else:
         current_user.has_registered_store = False
 
-    return render_template("spachainauth_home.html", user=current_user, store=store, progress=progress)  # ✅ Pass progress
+    return render_template("spachainauth_home.html", user=current_user, store=store, progress=progress,verifications=verifications)  # ✅ Pass progress
 
 
 @naledi_bp.route('/services')

@@ -1026,24 +1026,6 @@ def generate_compliance_status(user_id):
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Route to displace compliance status  for the store owner. The compliance excerciser is performed by the health inspector
 # and the store owner is notified of the compliance status
 # Route to display health compliance actions for the store owner
