@@ -35,7 +35,7 @@ from core.oauth_setup import setup_azure_oauth
 
 google = oauth.create_client('google')  # create the google oauth client
 
-# This is the decorator for the progress . it is not suiatble here but will put in anyway since this route is tightlu linked to spachain auth
+# This is the decorator for the progress . it is not suiatable here but will put in anyway since this route is tightlu linked to spachain auth
 
 @naledi_bp.context_processor
 def inject_progress():
@@ -106,7 +106,8 @@ def landing_page():
     # If user is authenticated, fetch progress
     progress = None
     if current_user.is_authenticated:
-        progress = get_registration_progress(current_user.user_id)
+        #progress = get_registration_progress(current_user.user_id)
+        progress = get_registration_progress(current_user.user_profile_id)  # Use profile_id for progress check
         print("Rendering the landing page with progress:", progress)
         return render_template("naledibase.html", user=current_user, progress=progress)
     return render_template("naledi_home.html", user=current_user,progress=progress)    
@@ -282,7 +283,7 @@ def naledi_home():
                 if store.reg_status == 'registered':
                     flash('You have already registered your store!', category='success')
                 else:
-                    flash('Your store is in draft status. Please complete the registration.', category='info')
+                    flash('Your store is in draft status. The registration will only be completed once verified', category='info')
             else:
                 current_user.has_registered_store = False
                 flash('Your store registration is pending or in an unknown status.', category='warning')
@@ -292,6 +293,8 @@ def naledi_home():
             flash('No store registered!', category='warning')
     else:
         current_user.has_registered_store = False
+
+   
 
     return render_template("spachainauth_home.html", user=current_user, store=store, progress=progress,verifications=verifications)  # ✅ Pass progress
 
@@ -476,35 +479,96 @@ def confirm_email(token):
 
 # define the function to get the registration status
 
-def get_registration_progress(user_id):
+# def get_registration_progress(user_id):
+#     progress = {
+#         "profile_complete": False,
+#         "registration_complete": False,
+#         "store_details_complete": False,
+#         "documents_uploaded": False,
+#     }
+
+#     # Check if profile is complete
+#     user_profile = UserProfile.query.filter_by(user_id=user_id).first()
+#     if user_profile:
+#         progress["profile_complete"] = True
+
+#     # Check if registration form is submitted
+#     reg_form = RegistrationForm.query.filter_by(user_id=user_id).first()
+#     if reg_form:
+#         progress["registration_complete"] = True
+
+#     # Check if store details are submitted
+#     store_details = StoreDetails.query.filter_by(owner_id=user_id).first()
+#     if store_details:
+#         progress["store_details_complete"] = True
+
+#     # Check if documents are uploaded
+#     documents = Document.query.filter_by(uploaded_by_user_id=user_id).first()
+#     if documents:
+#         progress["documents_uploaded"] = True
+
+#     return progress
+
+
+def get_registration_progress(user_profile_id):
+
     progress = {
-        "profile_complete": False,
-        "registration_complete": False,
-        "store_details_complete": False,
-        "documents_uploaded": False,
+        "profile_complete": "not-started",
+        "registration_complete": "not-started",
+        "store_details_complete": "not-started",
+        "documents_uploaded": "not-started",
     }
+    
 
-    # Check if profile is complete
-    user_profile = UserProfile.query.filter_by(user_id=user_id).first()
+    # ✅ Check profile existence
+    user_profile = UserProfile.query.filter_by(user_profile_id=user_profile_id).first()
     if user_profile:
-        progress["profile_complete"] = True
+        progress["profile_complete"] = "completed"
 
-    # Check if registration form is submitted
-    reg_form = RegistrationForm.query.filter_by(user_id=user_id).first()
+    # ✅ Registration form (linked to user_profile_id now)
+    reg_form = RegistrationForm.query.filter_by(user_id=user_profile_id).first()
     if reg_form:
-        progress["registration_complete"] = True
 
-    # Check if store details are submitted
-    store_details = StoreDetails.query.filter_by(owner_id=user_id).first()
-    if store_details:
-        progress["store_details_complete"] = True
+        if reg_form.status == "submitted":
+            progress["registration_complete"] = "in-progress"
+        elif reg_form.status == "registered":
+            progress["registration_complete"] = "completed"
+        # if reg_form.personal_details_complete or reg_form.business_type:
+        #     progress["registration_complete"] = "started"
+        # if (
+        #     reg_form.personal_details_complete and 
+        #     reg_form.address_details_complete and 
+        #     reg_form.business_type
+        # ):
+        #     progress["registration_complete"] = "completed"
 
-    # Check if documents are uploaded
-    documents = Document.query.filter_by(uploaded_by_user_id=user_id).first()
+    # ✅ Store details — must resolve via SpazaOwner first
+    spaza_owner = SpazaOwner.query.filter_by(user_profile_id=user_profile_id).first()
+    if spaza_owner:
+        store = StoreDetails.query.filter_by(owner_id=spaza_owner.owner_id).first()
+        if store:
+            if store.reg_status == "registered":
+                progress["store_details_complete"] = "completed"
+            elif store.reg_status in ("submitted", "draft"):
+                progress["store_details_complete"] = "in-progress"
+
+    # ✅ Documents uploaded by user_profile_id
+    documents = Document.query.filter_by(uploaded_by_user_id=user_profile_id).all()
     if documents:
-        progress["documents_uploaded"] = True
+        approved_docs = any(doc.reviewed_status == "approved" for doc in documents)
+        submitted_docs = any(doc.submitted_status == "submitted" and doc.reviewed_status == "pending" for doc in documents)
+
+        if approved_docs:
+            progress["documents_uploaded"] = "completed"
+        elif submitted_docs:
+            progress["documents_uploaded"] = "in-progress"
 
     return progress
+
+
+
+
+
 
 # the route to manage registration status from profile registtation to Documents upload
 

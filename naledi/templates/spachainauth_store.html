@@ -18,7 +18,11 @@
                 <p><strong>{{ store.store_name }}</strong><br>
                 {{ store.storeaddress }}, {{ store.city }}, {{ store.province }}<br>
                 <strong>Municipality:</strong> {{ store.district_mnc }}<br>
-                <strong>Store ID:</strong> {{ store.id }}</p>
+                <strong>Store ID:</strong>{{ store.store_id }}<br>
+                <strong>CIPC #:</strong> {{ store.cipcno }}<br>
+                <strong>SARS #:</strong> {{ store.sarsno }}
+                </p>
+
                 <hr>
               {% endfor %}
             {% else %}
@@ -59,8 +63,8 @@
                 <input type="text" class="form-control" id="storevolume" name="storevolume" required>
               </div>
               <div class="mb-3">
-                <label for="cicpno" class="form-label">CIPC Number</label>
-                <input type="text" class="form-control" id="cicpno" name="cicpno" required>
+                <label for="cipcno" class="form-label">CIPC Number</label>
+                <input type="text" class="form-control" id="cipcno" name="cipcno" required>
               </div>
               <div class="mb-3">
                 <label for="sarsno" class="form-label">SARS Number</label>

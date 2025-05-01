@@ -6,77 +6,96 @@
 <section style="background-color: #eee;">
   <h2 class="mb-4"> Welcome, {{ user.username }}</h2>
 
-  <div class="row">
+ <!--  <div class="row">
     <div class="col-lg-4">
       <div class="card shadow-sm">
         <div class="card-body text-center">
           <h5 class="my-3">{{ store.store_name or "Unnamed Store" }}</h5>
-          <p class="text-muted mb-1">{{ store.district_mnc or "No Location Provided" }}</p>
-         <!-- <a href="{{ url_for('spachainauth.update_profile') }}" class="btn btn-outline-primary mt-2">Update Profile</a> -->
-        </div>
+          <p class="text-muted mb-1">{{ store.district_mnc or "No Location Provided" }}</p> -->
+          <!-- <a href="{{ url_for('spachainauth.update_profile') }}" class="btn btn-outline-primary mt-2">Update Profile</a> -->
+       <!--  </div>
       </div>
-    </div>
+    </div> -->
 
-    <div class="col-lg-8">
-      <div class="row">
-        <div class="col-md-6 mb-4">
-          <div class="card shadow-sm h-100">
-            <div class="card-body">
-              <h6 class="text-primary mb-3">Verification Status</h6>
-
-              {% for label, value in {
-                'Owner Identity': verifications.owner_verified_id,
-                'Lesee Identity': verifications.lessee_verified_id,
-                'Business Registration': verifications.company_registration,
-                'Tax Clearance': verifications.tax_clearance,
-                'Police Clearance': verifications.police_clearanc,
-              }.items() %}
-                <p class="mb-1">{{ label }}</p>
-                <div class="progress mb-3" style="height: 6px;">
-                  <div class="progress-bar
-                    {% if value == 'Complete' %}bg-success
-                    {% elif value == 'Draft' %}bg-warning
-                    {% else %}bg-danger{% endif %}"
-                    role="progressbar"
-                    style="width: {% if value == 'Complete' %}100{% elif value == 'Draft' %}50{% else %}10{% endif %}%;">
-                  </div>
-                </div>
-              {% endfor %}
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-6 mb-4">
-          <div class="card shadow-sm h-100">
-            <div class="card-body">
-              <h6 class="text-primary mb-3">Municipal Compliance</h6>
-
-              {% for label, status in {
-                'Health Certification': compliance_status.verified_coa,
-                'Fire Inspection': compliance_status.verified_fire_insp,
-                'Zoning': compliance_status.verified_zoning_cert,
-                'Electrical': compliance_status.verified_elec_cer,
-                'Building Plans':compliance_status.verified_building_cert
-              }.items() %}
-                <p class="mb-1">{{ label }}</p>
-                <div class="progress mb-3" style="height: 6px;">
-                  <div class="progress-bar
-                    {% if status == 'Complete' %}bg-success
-                    {% elif status == 'Draft' %}bg-warning
-                    {% else %}bg-danger{% endif %}"
-                    role="progressbar"
-                    style="width: {% if status == 'Complete' %}100{% elif status == 'Draft' %}50{% else %}10{% endif %}%;">
-                  </div>
-                </div>
-              {% endfor %}
+    <div class="row">
+      <!-- 👤 Profile Summary Card (Left) -->
+      <div class="col-lg-4">
+        <div class="card mb-4 shadow-sm">
+          <div class="card-body text-center">
+            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" 
+                 alt="avatar" class="rounded-circle img-fluid" style="width: 150px;">
+            <h5 class="my-3">{{ user.username }}</h5>
+            <p class="text-muted mb-1">{{ registration.business_type }}</p>
+            <p class="text-muted mb-4">{{ registration.city }}</p>
+            <div class="d-flex justify-content-center mb-2">
+              <!-- <button type="button" class="btn btn-primary">Update Profile</button> -->
             </div>
           </div>
         </div>
       </div>
+    
+      <!-- 🧾 Identity & Compliance Cards (Right) -->
+      <div class="col-lg-8">
+        <div class="row">
+          <!-- ✅ Identity Verification Card -->
+          <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+              <div class="card-body">
+                <h6 class="text-primary mb-3">Verification Status</h6>
+                {% for label, value in {
+                  'Owner Identity': verifications.owner_verified_id,
+                  'Lesee Identity': verifications.lessee_verified_id,
+                  'Business Registration': verifications.company_registration,
+                  'Tax Clearance': verifications.tax_clearance,
+                  'Police Clearance': verifications.police_clearanc,
+                }.items() %}
+                  <p class="mb-2 d-flex justify-content-between align-items-center">
+                    <span>{{ label }}</span>
+                    <span class="badge 
+                      {% if value == 'Complete' %}badge-success
+                      {% elif value == 'Draft' %}badge-warning
+                      {% else %}badge-danger{% endif %}">
+                      {% if value == 'Complete' %}✅ Verified
+                      {% elif value == 'Draft' %}🕗 In Progress
+                      {% else %}❌ Not Verified{% endif %}
+                    </span>
+                  </p>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+    
+          <!-- 🏛️ Municipal Compliance Card -->
+          <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+              <div class="card-body">
+                <h6 class="text-primary mb-3">Municipal Compliance</h6>
+                {% for label, status in {
+                  'Health Certification': compliance_status.verified_coa,
+                  'Fire Inspection': compliance_status.verified_fire_insp,
+                  'Zoning': compliance_status.verified_zoning_cert,
+                  'Electrical': compliance_status.verified_elec_cer,
+                  'Building Plans': compliance_status.verified_building_cert,
+                }.items() %}
+                  <p class="mb-2 d-flex justify-content-between align-items-center">
+                    <span>{{ label }}</span>
+                    <span class="badge 
+                      {% if status == 'Complete' %}badge-success
+                      {% elif status == 'Draft' %}badge-warning
+                      {% else %}badge-danger{% endif %}">
+                      {% if status == 'Complete' %}✅ Verified
+                      {% elif status == 'Draft' %}🕗 In Progress
+                      {% else %}❌ Not Verified{% endif %}
+                    </span>
+                  </p>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
-  </section>
-  <script>
+ <!-- <script>
     var milestones = [
       { id: 1, status: "{{ progress.profile_complete }}" },
       { id: 2, status: "{{ progress.registration_complete }}" },
@@ -84,5 +103,22 @@
       { id: 4, status: "{{ progress.documents_uploaded }}" }
     ];
   </script>
+  <script src="{{ url_for('static', filename='js/progress.js') }}"></script> -->
+
+  <!-- Trying this piece of code that is currently part of naledibase-->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" crossorigin="anonymous"></script>
+  <script src="{{ url_for('static', filename='js/mncDropdown.js') }}"></script>
+
+  <script>
+      var milestones = [
+        { id: 1, status: "{{ progress.profile_complete }}" },
+        { id: 2, status: "{{ progress.registration_complete }}" },
+        { id: 3, status: "{{ progress.store_details_complete }}" },
+        { id: 4, status: "{{ progress.documents_uploaded }}" }
+      ];
+    </script>
   <script src="{{ url_for('static', filename='js/progress.js') }}"></script>
+
   {% endblock %}

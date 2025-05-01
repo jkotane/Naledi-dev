@@ -58,12 +58,14 @@ def before_request():
 #reg_form = RegistrationForm.query.filter_by(owner_id=spaza_owner.owner_id).first()
 
 def get_registration_progress(user_profile_id):
+
     progress = {
         "profile_complete": "not-started",
         "registration_complete": "not-started",
         "store_details_complete": "not-started",
         "documents_uploaded": "not-started",
     }
+    
 
     # ✅ Check profile existence
     user_profile = UserProfile.query.filter_by(user_profile_id=user_profile_id).first()
@@ -75,7 +77,7 @@ def get_registration_progress(user_profile_id):
     if reg_form:
 
         if reg_form.status == "submitted":
-            progress["registration_complete"] = "started"
+            progress["registration_complete"] = "in-progress"
         elif reg_form.status == "registered":
             progress["registration_complete"] = "completed"
         # if reg_form.personal_details_complete or reg_form.business_type:
@@ -95,7 +97,7 @@ def get_registration_progress(user_profile_id):
             if store.reg_status == "registered":
                 progress["store_details_complete"] = "completed"
             elif store.reg_status in ("submitted", "draft"):
-                progress["store_details_complete"] = "started"
+                progress["store_details_complete"] = "in-progress"
 
     # ✅ Documents uploaded by user_profile_id
     documents = Document.query.filter_by(uploaded_by_user_id=user_profile_id).all()
@@ -106,10 +108,9 @@ def get_registration_progress(user_profile_id):
         if approved_docs:
             progress["documents_uploaded"] = "completed"
         elif submitted_docs:
-            progress["documents_uploaded"] = "started"
+            progress["documents_uploaded"] = "in-progress"
 
     return progress
-
 
 
 # For users with a user profile , they can now register their spaza shop
@@ -234,9 +235,24 @@ def spachainauth_home():
     spaza_owner = SpazaOwner.query.filter_by(user_profile_id=user_id).first()
 
     store = None
-    progress = get_registration_progress(user_id)  # ✅ Pass correct ID
-    verifications = generate_verification_status(user_id)
-    compliance_status = generate_compliance_status(user_id)
+    progress = None
+    verifications = None
+    compliance_status = None
+    
+    # Check if the user is authenticated and get the progress status 
+    # if current_user.is_authenticated:
+    #     progress = get_registration_progress(current_user.user_id)
+    #     print("Retrieved progress for spachainauth:", progress)
+
+
+    # progress = get_registration_progress(user_id)  # ✅ Pass correct ID
+    # verifications = generate_verification_status(user_id)
+    # compliance_status = generate_compliance_status(user_id)
+
+    registration = RegistrationForm.query.filter_by(user_id=user_id).first()
+    if not registration:
+        flash('No registration details found. Please complete the registration form first.', category='error')
+        return redirect(url_for('spachainauth.spachainauth_register'))
 
     if spaza_owner:
         store = StoreDetails.query.filter_by(owner_id=spaza_owner.owner_id).first()
@@ -247,8 +263,11 @@ def spachainauth_home():
                 current_user.has_registered_store = True
                 if store.reg_status == 'registered':
                     flash('You have already registered your store!', 'success')
+                    print(f"reached spachaiin home and Progress is : {progress}")
                 else:
-                    flash('Your store is in draft status. Please complete the registration.', 'info')
+                    flash('Your store is in draft status. Your registration will be complete once officially verified ', 'info')
+                    print(f"reached spachaiin home and Progress is : {progress}")
+
             else:
                 current_user.has_registered_store = False
                 flash('Your store registration is pending or unknown.', 'warning')
@@ -258,7 +277,11 @@ def spachainauth_home():
     else:
         current_user.has_registered_store = False
 
-    return render_template("spachainauth_home.html", user=current_user, store=store, progress=progress,verifications=verifications, compliance_status=compliance_status)
+    progress = get_registration_progress(current_user.user_id)
+
+    print(f"Progress for spachainauth: {progress}")
+
+    return render_template("spachainauth_home.html", user=current_user, store=store,registration=registration, progress=progress,verifications=verifications, compliance_status=compliance_status)
 
 # owner details for the spaza shop owner
 #@spachainauth.route('/owner-details/<int:user_id>', methods=['GET', 'POST'])
@@ -344,7 +367,7 @@ def spachainauth_store():
         storetype = request.form.get('storetype', '').strip()
         store_name = request.form.get('store_name', '').strip()
         storevolume = request.form.get('storevolume', '').strip()
-        cicpno = request.form.get('cicpno', '').strip()
+        cipcno = request.form.get('cipcno', '').strip()
         sarsno = request.form.get('sarsno', '').strip()
         permit_id = request.form.get('permitid', '').strip()
         zonecertno = request.form.get('zonecertno', '').strip()
@@ -363,7 +386,7 @@ def spachainauth_store():
         # Validate required store fields
         required_fields = {
             "Store Type": storetype, "Store Name": store_name, "Store Volume": storevolume,
-            "CIPC Number": cicpno, "SARS Number": sarsno, "Permit ID": permit_id,
+            "CIPC Number": cipcno, "SARS Number": sarsno, "Permit ID": permit_id,
             "Zoning Certification": zonecertno, "Ownership Status": ownershipstatus,
             "Store Address": storeaddress, "City": city, "Postal Code": postal_code,
             "Province": province, "District": district_mnc
@@ -392,7 +415,7 @@ def spachainauth_store():
                 storetype=storetype,
                 store_name=store_name,
                 storevolume=storevolume,
-                cicpno=cicpno,
+                cipcno=cipcno,
                 sarsno=sarsno,
                 permit_id=permit_id,
                 zonecertno=zonecertno,

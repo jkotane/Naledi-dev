@@ -232,19 +232,27 @@
 
                 <!-- Progress circles -->
                 <div class="progress-item">
-                    <div class="progress-circle {% if progress.profile_complete %}completed {% else %} not-started{% endif %}">1</div>
+                    <div class="progress-circle {% if progress.profile_complete == 'completed' %}completed
+                    {% elif progress.profile_complete == 'in-progress' %}in-progress
+                    {% else %}not-started{% endif %}">1</div>
                     <span>Profile</span>
                 </div>
                 <div class="progress-item">                  
-                    <div class="progress-circle {% if progress.registration_complete %}completed{% else %}not-started{% endif %}">2</div>
+                    <div class="progress-circle {% if progress.registration_complete == 'completed' %}completed
+                    {% elif progress.registration_complete == 'in-progress' %}in-progress
+                    {% else %}not-started{% endif %}">2</div>
                     <span>Registration</span>
                 </div>
                 <div class="progress-item">
-                    <div class="progress-circle {% if progress.store_details_complete %}completed{% else %}not-started{% endif %}">3</div>
+                    <div class="progress-circle {% if progress.store_details_complete ==  'completed' %}completed
+                    {% elif progress.store_details_complete == 'in-progress' %}in-progress
+                    {% else %}not-started{% endif %}">3</div>
                     <span>Store</span>
                 </div>
                 <div class="progress-item">
-                    <div class="progress-circle {% if progress.documents_uploaded %}completed{% else %}not-started{% endif %}">4</div>
+                    <div class="progress-circle {% if progress.documents_uploaded  == 'completed' %}completed
+                    {% elif progress.documents_uploaded == 'in-progress' %}in-progress
+                    {% else %}not-started{% endif %}">4</div>
                     <span>Documents</span>
                 </div>
             </div>

@@ -198,7 +198,7 @@ class StoreDetails(db.Model,UserMixin):
     store_id = db.Column(db.Integer, primary_key=True)
     #store_id = db.Column(db.Integer, unique=True, nullable=False, server_default=db.text("nextval('store_details_store_id_seq')"))
     permit_id = db.Column(db.Integer, unique=True, nullable=False)
-    cicpno = db.Column(db.String(13), unique=True, nullable=False)
+    cipcno = db.Column(db.String(13), unique=True, nullable=False)
     sarsno = db.Column(db.String(13), unique=True, nullable=False)
     zonecertno = db.Column(db.String(13), unique=True, nullable=False)
     storetype = db.Column(db.String(150), nullable=False)
